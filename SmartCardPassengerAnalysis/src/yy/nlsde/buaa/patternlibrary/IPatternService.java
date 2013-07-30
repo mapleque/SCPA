@@ -1,4 +1,4 @@
-package yy.nlsde.buaa.base.service;
+package yy.nlsde.buaa.patternlibrary;
 
 
 public interface IPatternService {

@@ -1,9 +1,7 @@
-package yy.nlsde.buaa.base.service;
+package yy.nlsde.buaa.patternlibrary;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import yy.nlsde.buaa.base.bean.Pattern;
 
 public class PassengerPattern {
 
@@ -37,7 +35,7 @@ public class PassengerPattern {
 		this.pattern = pattern;
 	}
 
-	public List<Pattern> getPatternList() {
+	public List<PatternBean> getPatternList() {
 		String pbsstr = this.pattern;
 		if (pbsstr == null || pbsstr.length() <= 0) {
 			return null;
@@ -46,9 +44,9 @@ public class PassengerPattern {
 		if (pbl.length <= 0) {
 			return null;
 		}
-		List<Pattern> rl = new ArrayList<Pattern>();
+		List<PatternBean> rl = new ArrayList<PatternBean>();
 		for (String pbs : pbl) {
-			Pattern pb = Pattern.getPattern(pbs);
+			PatternBean pb = PatternBean.getPattern(pbs);
 			if (pb.isAvilable()) {
 				rl.add(pb);
 			}
@@ -56,12 +54,12 @@ public class PassengerPattern {
 		return rl;
 	}
 
-	public void updatePattern(List<Pattern> pbs) {
+	public void updatePattern(List<PatternBean> pbs) {
 		if (pbs == null || pbs.size() <= 0) {
 			return;
 		}
 		this.pattern = "";
-		for (Pattern pb : pbs) {
+		for (PatternBean pb : pbs) {
 			this.pattern += PassengerPattern.SPLIT_CHAR;
 			this.pattern += pb;
 		}

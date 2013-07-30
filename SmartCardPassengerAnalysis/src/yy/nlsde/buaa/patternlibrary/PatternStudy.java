@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import yy.nlsde.buaa.base.bean.Pattern;
-import yy.nlsde.buaa.base.configer.ServiceFatory;
-import yy.nlsde.buaa.base.service.IPatternService;
-import yy.nlsde.buaa.base.service.PassengerPattern;
 
 public class PatternStudy {
 
@@ -57,10 +53,10 @@ public class PatternStudy {
 	 * @param card
 	 */
 	public void study(CardBean card) {
-		Pattern pb = Pattern.getPattern(card);
+		PatternBean pb = PatternBean.getPattern(card);
 		PassengerPattern pp = ips.getPattern(card.getCardID());
-		List<Pattern> pbs = pp.getPatternList();
-		List<Pattern> npbs = study(pbs, pb);
+		List<PatternBean> pbs = pp.getPatternList();
+		List<PatternBean> npbs = study(pbs, pb);
 		pp.updatePattern(npbs);
 		if (pp.isNew()) {
 			ips.savePattern(pp);
@@ -70,18 +66,18 @@ public class PatternStudy {
 
 	}
 
-	private List<Pattern> study(List<Pattern> pbs, Pattern pb) {
+	private List<PatternBean> study(List<PatternBean> pbs, PatternBean pb) {
 		if (pbs == null || pbs.size() == 0) {
-			pbs = new ArrayList<Pattern>();
+			pbs = new ArrayList<PatternBean>();
 			pbs.add(pb);
 			return pbs;
 		}
-		List<Pattern> npbs = new ArrayList<Pattern>();
+		List<PatternBean> npbs = new ArrayList<PatternBean>();
 		boolean mf=false;
-		for (Pattern tpb : pbs) {
+		for (PatternBean tpb : pbs) {
 			if (inTimeScale(tpb, pb)) {
 				if (inSpaceScale(tpb, pb)) {
-					Pattern npb = merge(tpb, pb);
+					PatternBean npb = merge(tpb, pb);
 					npbs.add(npb);
 					mf=true;
 					continue;
@@ -95,23 +91,23 @@ public class PatternStudy {
 		return npbs;
 	}
 
-	private Pattern merge(Pattern pb1, Pattern pb2) {
+	private PatternBean merge(PatternBean pb1, PatternBean pb2) {
 		double time = ((pb1.getTime() + pb2.getTime()) / 2);
 		double lon = ((pb1.getLon() + pb2.getLon()) / 2);
 		double lat = ((pb1.getLat() + pb2.getLat()) / 2);
 		int weight = pb1.getWeight() + pb2.getWeight();
-		Pattern pb = new Pattern(time, lon, lat, weight);
+		PatternBean pb = new PatternBean(time, lon, lat, weight);
 		return pb;
 	}
 
-	private boolean inTimeScale(Pattern pb1, Pattern pb2) {
+	private boolean inTimeScale(PatternBean pb1, PatternBean pb2) {
 		if (time(pb1.getTime(), pb2.getTime()) < TST) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean inSpaceScale(Pattern pb1, Pattern pb2) {
+	private boolean inSpaceScale(PatternBean pb1, PatternBean pb2) {
 		if (distence(pb1.getLon(), pb1.getLat(), pb2.getLon(), pb2.getLat()) < DST) {
 			return true;
 		}
