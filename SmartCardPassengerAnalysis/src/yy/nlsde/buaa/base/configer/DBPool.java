@@ -6,11 +6,18 @@ import java.sql.SQLException;
 
 public class DBPool {
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		DBPool.getDBConnection();
 	}
-	
+
 	public static Connection getDBConnection() {
+		//返回JDBC connection
+		//return DBPool.getDBConnection();
+		//改为连接池
+		return ConnectionManager.getInstance().getConnection();
+	}
+
+	public static Connection getJDBCConnection() {
 		// 驱动程序名
 		String driver = "com.mysql.jdbc.Driver";
 
