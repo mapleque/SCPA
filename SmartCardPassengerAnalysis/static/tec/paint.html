@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>sample of the arrow</title>
+<script type="text/javascript" src="./arrow.js"></script>
+</head>
+<body>
+<canvas width=800 height=600 id="arrowLine">请使用支持HTML5的浏览器</canvas>
+<script type="text/javascript">
+var cont=document.getElementById("arrowLine").getContext('2d');
+var a1=new window.mapleque.arrow();
+a1.set({x:350,y:300},{x:200,y:200},1);
+a1.paint(cont);
+var a2=new window.mapleque.arrow();
+a2.set({x:100,y:100},{x:200,y:250},0.1);
+a2.paint(cont);
+var a3=new window.mapleque.arrow();
+a3.set({x:100,y:300},{x:150,y:150},0.5);
+a3.paint(cont);
+var a4=new window.mapleque.arrow();
+a4.set({x:350,y:150},{x:150,y:250},0.1);
+a4.setPara({
+	arrow_size:0.1,
+	arrow_sharp:0.1
+})
+a4.paint(cont);
+</script>
+<div style="width:400px;height:300px;" id="graphdiv"></div>
+<script type="text/javascript" src="./dygraph-combined.js"></script>
+<script type="text/javascript" src="./data.js"></script>
+<script type="text/javascript">
+var data=StubbedData();
+g = new Dygraph(
+
+    // containing div
+    document.getElementById("graphdiv"),
+
+    // CSV or path to a CSV file.
+    data,{
+        errorBars: true,
+        valueRange: [0,10]
+      }
+
+  );
+</script>
+<div style="width:400px;height:300px;" id="graphdiv1"></div>
+<script type="text/javascript" src="./dygraph-combined.js"></script>
+<script type="text/javascript" src="./data.js"></script>
+<script type="text/javascript">
+var data1="Date,Temperature\n" +
+"2008-05-07,75,1\n" +
+"2008-05-08,70,0\n" +
+"2008-05-09,80,10\n";
+g = new Dygraph(
+
+    // containing div
+    document.getElementById("graphdiv1"),
+
+    // CSV or path to a CSV file.
+    data1,{
+        errorBars: true,
+        valueRange: [60,100]
+      }
+
+  );
+</script>
+
+</body>
+</html>

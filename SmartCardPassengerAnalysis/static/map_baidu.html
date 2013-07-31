@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Passenger stream</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+}
+
+#container {
+	height: 100%
+}
+
+.popup {
+	width: 400px;
+	height: 300px;
+	position: absolute;
+}
+
+.opt {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+input[type=range]:before {
+	content: attr(min);
+}
+
+input[type=range]:after {
+	content: attr(max);
+}
+
+</style>
+<script type="text/javascript" src="./jquery-1.8.2.js"></script>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=1.5&ak=176929efc91f17f31e6b93636c7449c8">
+</script>
+<script type="text/javascript" src="./arrow_forBMap.js"></script>
+<script type="text/javascript" src="./area_forBMap.js"></script>
+<script type="text/javascript" src="./stream_data_10.js"></script>
+<script type="text/javascript" src="./area_data_10.js"></script>
+<script type="text/javascript" src="./application.js"></script>
+</head>
+<body>
+	<div id="container"></div>
+	<script type="text/javascript">
+		var MAXP = 10000;
+
+		var map = new BMap.Map("container"); // 创建地图实例  
+		map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+		map.addControl(new BMap.NavigationControl());
+		//map.addControl(new BMap.ScaleControl());
+		//map.addControl(new BMap.OverviewMapControl());
+		//map.addControl(new BMap.MapTypeControl());
+
+		var arr = new window.mapleque.arrow();
+		
+		stream_datas.forEach(function(d, l) {
+			var st=Math.log(d[4]) / Math.log(MAXP);
+			if (st<0)st=0;
+			arr.set("arr_" + l, {
+				x : d[0],
+				y : d[1]
+			}, {
+				x : d[2],
+				y : d[3]
+			}, st);
+			arr.paint(map);
+		});
+
+		var are = new window.mapleque.area();
+		area_datas.forEach(function(d, l) {
+			var path = [];
+			d[0].forEach(function(p) {
+				path.push({
+					x : p[0],
+					y : p[1]
+				});
+			});
+			var st=Math.log(d[1]) / Math.log(MAXP);
+			if (st<0)st=0;
+			are.set("are_" + l, path, st);
+			are.paint(map);
+		});
+	</script>
+
+	<div class="opt">
+		<div>
+			<label>时间：</label><span id="time_value">7</span>:00
+		</div>
+		<div>	
+			<input style="width:100%" type="range" name="time" min="0" max="23"
+				step="1" list="timelist" onchange="showValue(this.value)" value="7"></input>
+			<datalist id="timelist">
+				<option value="0">
+				<option value="1">
+				<option value="2">
+				<option value="3">
+				<option value="4">
+				<option value="5">
+				<option value="6">
+				<option value="7">
+				<option value="8">
+				<option value="9">
+				<option value="10">
+				<option value="11">
+				<option value="12">
+				<option value="13">
+				<option value="14">
+				<option value="15">
+				<option value="16">
+				<option value="17">
+				<option value="18">
+				<option value="19">
+				<option value="20">
+				<option value="21">
+				<option value="22">
+				<option value="23">
+			</datalist>
+			<script> 
+            function showValue(value) { 
+                document.getElementById("time_value").innerHTML=value; 
+            } 
+            </script>
+		</div>
+		<div>
+			<label>日期：</label><input type="date" name="date" min="2011-01-01"
+				max="2014-01-01" value="2013-05-30"/>
+		</div>
+	</div>
+</body>
+</html>

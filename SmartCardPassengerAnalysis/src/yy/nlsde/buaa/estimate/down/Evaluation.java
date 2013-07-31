@@ -1,5 +1,6 @@
 package yy.nlsde.buaa.estimate.down;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +16,14 @@ public class Evaluation {
 			e.evaluate(date);
 			rl.add(e.getResult());
 		}
-		Evaluation.outTofile(rl,System.currentTimeMillis()+"");
+		Evaluation.outTofile(rl,"downEvaluateResult"+File.separator+System.currentTimeMillis()+".csv");
 		System.out.println("start time:" + System.currentTimeMillis());
 		System.out.println("end time:" + System.currentTimeMillis());
 	}
 	
 	public static <T> void outTofile(List<T> list,String filename){
-		//TODO:output the result to file
+		//output the result to file
+		OutToFile.outToFile(list, filename);
 	}
 
 	private final int NO_PATTERN = 1;
