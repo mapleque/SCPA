@@ -4,45 +4,36 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import yy.nlsde.buaa.base.configer.DBPool;
 
 public class PatternUtil {
-	private String patternFile="G:\\cardData\\pattern\\pattern_30";
-	private Connection conn;
+	private String patternFile="C:\\study\\gradu\\pattern\\pattern_30";
+	private String npatternFile="C:\\study\\gradu\\pattern\\n_pattern_30";
 	
 	public static void main(String[] args){
-		new PatternUtil().file2DB();
+		new PatternUtil().file2file();
+		new PatternUtil().readfile(100);
 	}
 	
-	public void file2DB(){
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		File pfile=new File(this.patternFile);
-		if (!pfile.exists())
-			return;
+	public void readfile(int lineNum){
+		File pfile=new File(this.npatternFile);
 		try {
 			BufferedReader pin = new BufferedReader(new InputStreamReader(
 					new FileInputStream(pfile), "gbk"));
 			String line;
 			int num=0;
-			this.conn=DBPool.getDBConnection();
 			while ((line=pin.readLine())!=null){
 				num++;
-				if (num%10000==0)
-					System.out.println(num+":"+df.format(new Date()));
-				String[] data=line.split("\t");
-				this.savePattern(data[0], data[1]);
+				if (num>lineNum)
+					return;
+				System.out.println(line);
 			}
+			pin.close();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -52,15 +43,41 @@ public class PatternUtil {
 		}
 	}
 	
-	public void savePattern(String id,String pattern){
+	public void file2file(){
+		File pfile=new File(this.patternFile);
+		File nfile=new File(this.npatternFile);
+		if (!pfile.exists())
+			return;
 		try {
-			String sql="insert into pattern_st values(?,?)";
-			PreparedStatement st=conn.prepareStatement(sql);
-			st.setString(1, id);
-			st.setString(2, pattern);
-			st.executeUpdate();
-			st.close();
-		} catch (SQLException e) {
+			BufferedReader pin = new BufferedReader(new InputStreamReader(
+					new FileInputStream(pfile), "gbk"));
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+					new FileOutputStream(nfile), "gbk"), true);
+			String line;
+			int num=0;
+			while ((line=pin.readLine())!=null){
+				num++;
+				if (num%1000000==0)
+					System.out.println(num+":"+System.currentTimeMillis());
+				String[] data=line.split("\t");
+				if (data[1].contains(",")){
+					String[] sub=data[1].split(",");
+					String sb="";
+					for (int i=0;i<sub.length;i+=4){
+						sb+="#"+sub[i+0]+","+sub[i+1]+","+sub[i+2]+","+sub[i+3];
+					}
+					pw.println(data[0]+"\t"+sb.substring(1));
+				}else{
+					System.err.println("no pattern: "+data[0]+"\t"+data[1] );
+				}
+			}
+			pin.close();
+			pw.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
