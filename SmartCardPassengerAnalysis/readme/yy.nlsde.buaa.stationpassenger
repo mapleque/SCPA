@@ -1,0 +1,10 @@
+用于计算站点客流。
+入口：PassengerCount
+
+其中
+PassengerCount.OUT_PATH
+设置了输出文件的路径。输出文件以日期命名，为csv文件。
+
+运行前请修改
+conf/data_path.properties->complete_card_data=xxxxxx
+将其指向完整一卡通数据文件夹。

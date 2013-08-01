@@ -1,4 +1,4 @@
-package yy.nlsde.buaa.estimate.down;
+package yy.nlsde.buaa.estimate.up;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +19,7 @@ public class CardReadIn {
 	
 	public CardReadIn() {
 		this.cardDataPath = "G:\\cardData\\AFCcard";
+//		this.cardDataPath = "F:\\study_data\\card\\AFCcard";
 	}
 	
 	public void setCardDate(String[] date) {
@@ -44,7 +45,7 @@ public class CardReadIn {
 				}
 				return null;
 			}
-			return new CardBean(line,CardBean.AFC);
+			return new CardBean(line);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {

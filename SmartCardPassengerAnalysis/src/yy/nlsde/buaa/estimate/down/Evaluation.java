@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import yy.nlsde.buaa.base.constant.OutToFile;
+
 public class Evaluation {
 	public static void main(String[] args) {
 		System.out.println("start time:" + System.currentTimeMillis());
