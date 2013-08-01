@@ -2,6 +2,8 @@ package yy.nlsde.buaa.estimate.down;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Evaluation {
@@ -16,13 +18,16 @@ public class Evaluation {
 			e.evaluate(date);
 			rl.add(e.getResult());
 		}
-		Evaluation.outTofile(rl,"downEvaluateResult"+File.separator+System.currentTimeMillis()+".csv");
+		Evaluation.outTofile(
+				rl,
+				"downEvaluateResult" + File.separator
+						+ System.currentTimeMillis() + ".csv");
 		System.out.println("start time:" + System.currentTimeMillis());
 		System.out.println("end time:" + System.currentTimeMillis());
 	}
-	
-	public static <T> void outTofile(List<T> list,String filename){
-		//output the result to file
+
+	public static <T> void outTofile(List<T> list, String filename) {
+		// output the result to file
 		OutToFile.outToFile(list, filename);
 	}
 
@@ -30,6 +35,8 @@ public class Evaluation {
 	private final int MISS_PATTERN = 2;
 	private final int WRONG_PATTERN = 3;
 	private final int CORRECT_PATTERN = 4;
+	private final int CORRECT_DOWN = 5;
+	private final int WRONG_DOWN = 6;
 	private final int TOTAL_NUM = 0;
 
 	private int[] result;
@@ -37,20 +44,23 @@ public class Evaluation {
 	private IPatternService ips;
 
 	private static final int DST = 1000;// 相同空间判定阈值，m
-	private static final int TST = 120;// 乘车时间范围阈值，m
+	private static final int TST = 90;// 乘车时间范围阈值，m
 
 	public Evaluation() {
 		ips = ServiceFatory.getPatternService();
-		result = new int[5];
+		result = new int[7];
 		result[NO_PATTERN] = 0;
 		result[MISS_PATTERN] = 0;
 		result[WRONG_PATTERN] = 0;
 		result[CORRECT_PATTERN] = 0;
+		result[CORRECT_DOWN] = 0;
+		result[WRONG_DOWN] = 0;
 		result[TOTAL_NUM] = 0;
 	}
 
 	public String getResult() {
-		return result[TOTAL_NUM] + "," + result[CORRECT_PATTERN] + ","
+		return result[TOTAL_NUM] + "," + result[CORRECT_DOWN] + ","
+				+ result[WRONG_DOWN] + "," + result[CORRECT_PATTERN] + ","
 				+ result[WRONG_PATTERN] + "," + result[MISS_PATTERN] + ","
 				+ result[NO_PATTERN];
 	}
@@ -79,50 +89,108 @@ public class Evaluation {
 		List<PatternBean> pl = pp.getPatternList();
 		PatternBean cp = getCorrectPattern(pl, card);
 		if (cp != null) {
-			if(isCorrect(card, cp)){
+			if (isCorrectPattern(card, cp)) {
 				result[CORRECT_PATTERN]++;
-			}else{
+			} else {
 				result[WRONG_PATTERN]++;
+			}
+			if (isCorrectDown(card, cp, pl)) {
+				result[CORRECT_DOWN]++;
+			} else {
+				result[WRONG_DOWN]++;
 			}
 		}
 	}
 
-	private PatternBean getCorrectPattern(List<PatternBean> pl,CardBean card){
-		if (pl.size()<=0){
+	private PatternBean getCorrectPattern(List<PatternBean> pl, CardBean card) {
+		if (pl.size() <= 0) {
 			result[NO_PATTERN]++;
 			return null;
 		}
-		//get the most probably pattern
-		List<PatternBean> tl=new ArrayList<PatternBean>();
-		PatternBean cpb=new PatternBean(card);
-		for (PatternBean pb:pl){
-			if (inTimeScale(pb,cpb)){
-				//add to the property list
+		// get the most probably pattern
+		List<PatternBean> tl = new ArrayList<PatternBean>();
+		PatternBean cpb = new PatternBean(card);
+		for (PatternBean pb : pl) {
+			if (inTimeScale(pb, cpb)) {
+				// add to the property list
 				tl.add(pb);
 			}
 		}
-		if (tl.size()<=0){
+		if (tl.size() <= 0) {
 			result[MISS_PATTERN]++;
 			return null;
 		}
-		PatternBean rs=null;
-		for (PatternBean pb:tl){
-			//TODO:bus card in line filter
-			if (rs==null){
-				rs=pb;
-			}else{
-				if (rs.weight<pb.weight){
-					rs=pb;
+		PatternBean rs = null;
+		for (PatternBean pb : tl) {
+			// TODO:bus card in line filter
+			if (rs == null) {
+				rs = pb;
+			} else {
+				if (rs.weight < pb.weight) {
+					rs = pb;
 				}
 			}
 		}
 		return rs;
 	}
 
-	private boolean isCorrect(CardBean card, PatternBean cp) {
-		if (inSpaceScale(card,cp))
+	private boolean isCorrectPattern(CardBean card, PatternBean cp) {
+		if (inSpaceScale(card, cp))
 			return true;
 		return false;
+	}
+
+	private boolean isCorrectDown(CardBean card, PatternBean cp,
+			List<PatternBean> pl) {
+		Collections.sort(pl, new Comparator<PatternBean>() {
+			@Override
+			public int compare(PatternBean o1, PatternBean o2) {
+				return (int) (o1.getTime() - o2.getTime());
+			}
+		});
+		PatternBean cpb = new PatternBean(card);
+		boolean flag = false;
+		int stweight = 0;
+		List<PatternBean> tpl = new ArrayList<PatternBean>();
+		for (PatternBean tp : pl) {
+			if (inTimeScale(cpb, tp)) {
+				flag = true;
+			}
+			if (flag) {
+				if (inSpaceScale(cpb, tp)) {
+					stweight = tp.getWeight();
+				} else {
+					tpl.add(tp);
+				}
+			}
+		}
+		// get the correct down pattern
+		PatternBean corPb = null;
+		for (PatternBean tp : tpl) {
+			if (tp.getWeight() > stweight / 2) {
+				corPb = tp;
+			}
+		}
+		// the last down need to find the morning up 
+		if (corPb == null) {
+			for (PatternBean tp : pl) {
+				if (tp.getWeight() > stweight / 2) {
+					corPb = tp;
+				}
+			}
+		}
+		// low down the filter
+		if (corPb == null && tpl.size() > 0) {
+			corPb = tpl.get(0);
+		}
+		if (corPb == null && pl.size() > 0) {
+			corPb = pl.get(0);
+		}
+		// no pattern can find
+		if (corPb == null) {
+			return false;
+		}
+		return inSpaceScale(card, corPb);
 	}
 
 	private boolean inTimeScale(PatternBean pb1, PatternBean pb2) {
@@ -132,8 +200,17 @@ public class Evaluation {
 		return false;
 	}
 
+	private boolean inSpaceScale(PatternBean pb1, PatternBean pb2) {
+		if (distence(pb1.getLon(), pb1.getLat(), pb2.getLon(), pb2.getLat()) < DST) {
+			return true;
+		}
+		return false;
+	}
+
+	// down space
 	private boolean inSpaceScale(CardBean card, PatternBean pb) {
-		if (distence(Double.valueOf(card.getDownLon()), Double.valueOf(card.getDownLat()), pb.getLon(), pb.getLat()) < DST) {
+		if (distence(Double.valueOf(card.getDownLon()),
+				Double.valueOf(card.getDownLat()), pb.getLon(), pb.getLat()) < DST) {
 			return true;
 		}
 		return false;

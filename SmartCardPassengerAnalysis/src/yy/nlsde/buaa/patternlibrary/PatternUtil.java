@@ -29,8 +29,10 @@ public class PatternUtil {
 			int num=0;
 			while ((line=pin.readLine())!=null){
 				num++;
-				if (num>lineNum)
+				if (num>lineNum){
+					pin.close();
 					return;
+				}
 				System.out.println(line);
 			}
 			pin.close();
