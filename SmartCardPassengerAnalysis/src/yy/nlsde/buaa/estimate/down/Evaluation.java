@@ -41,12 +41,14 @@ public class Evaluation {
 	private final int WRONG_DOWN = 6;
 	private final int TOTAL_NUM = 0;
 
+//	[101072, 40078, 19232, 37493, 4269, 7222, 34540]
+	
 	private int[] result;
 
 	private IPatternService ips;
 
 	private static final int DST = 1000;// 相同空间判定阈值，m
-	private static final int TST = 90;// 乘车时间范围阈值，m
+	private static final int TST = 2;// 乘车时间范围阈值，m
 
 	public Evaluation() {
 		ips = ServiceFatory.getPatternService();
@@ -105,7 +107,7 @@ public class Evaluation {
 	}
 
 	private PatternBean getCorrectPattern(List<PatternBean> pl, CardBean card) {
-		if (pl.size() <= 0) {
+		if (pl==null||pl.size() <= 0) {
 			result[NO_PATTERN]++;
 			return null;
 		}
@@ -169,14 +171,14 @@ public class Evaluation {
 		// get the correct down pattern
 		PatternBean corPb = null;
 		for (PatternBean tp : tpl) {
-			if (tp.getWeight() > stweight / 2) {
+			if (stweight>0&&tp.getWeight() > stweight / 2) {
 				corPb = tp;
 			}
 		}
 		// the last down need to find the morning up 
 		if (corPb == null) {
 			for (PatternBean tp : pl) {
-				if (tp.getWeight() > stweight / 2) {
+				if (stweight>0&&tp.getWeight() > stweight / 2) {
 					corPb = tp;
 				}
 			}

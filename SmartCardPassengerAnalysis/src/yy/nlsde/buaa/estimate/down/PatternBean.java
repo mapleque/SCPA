@@ -26,12 +26,13 @@ public class PatternBean {
 
 	protected PatternBean(CardBean card) {
 		try {
-			String timestr = card.getUpTime(CardBean.MIN);
-			if (timestr == null || timestr.length() != 4) {
+			String timestr = card.getUpTime(CardBean.HOUR);
+			if (timestr == null || timestr.length() != 2) {
 				this.avilable = false;
 			}
-			this.time = Double.valueOf(timestr.substring(0, 2)) * 60
-					+ Double.valueOf(timestr.substring(2, 4));
+//			this.time = Double.valueOf(timestr.substring(0, 2)) * 60;
+//					+ Double.valueOf(timestr.substring(2, 4));
+			this.time=Double.valueOf(timestr);
 			this.lon = Double.valueOf(card.getUpLon());
 			this.lat = Double.valueOf(card.getUpLat());
 			this.weight = 1;

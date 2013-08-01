@@ -12,9 +12,9 @@ public class DBPool {
 
 	public static Connection getDBConnection() {
 		//返回JDBC connection
-		//return DBPool.getDBConnection();
+		return DBPool.getJDBCConnection();
 		//改为连接池
-		return ConnectionManager.getInstance().getConnection();
+//		return ConnectionManager.getInstance().getConnection();
 	}
 
 	public static Connection getJDBCConnection() {

@@ -18,7 +18,7 @@ public class CardReadIn {
 	private int dateIndex=0;
 	
 	public CardReadIn() {
-		this.cardDataPath = "G:\\cardData\\AFCcard";
+		this.cardDataPath = "C:\\study\\gradu\\AFCData";
 	}
 	
 	public void setCardDate(String[] date) {

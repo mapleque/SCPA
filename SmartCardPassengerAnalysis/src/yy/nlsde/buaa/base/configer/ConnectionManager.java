@@ -1,6 +1,7 @@
 package yy.nlsde.buaa.base.configer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -13,10 +14,11 @@ public class ConnectionManager {
 
 	public ComboPooledDataSource ds;
 	private final static String c3p0Properties = "conf"+File.separator+"c3p0.properties";
-
+	
 	private ConnectionManager() throws Exception {
 		Properties p = new Properties();
-		p.load(this.getClass().getResourceAsStream(c3p0Properties));
+		FileInputStream in=new FileInputStream(c3p0Properties);
+		p.load(in);
 		ds = new ComboPooledDataSource();
 	}
 
