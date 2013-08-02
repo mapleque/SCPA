@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>heatmap.js GMaps Heatmap Layer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			body, html {
+				margin:0;
+				padding:0;
+				font-family:Arial;
+			}			
+			#main {
+				position:relative;
+				width:100%;
+				padding:20px;
+				margin:auto;
+			}
+			#heatmapArea {
+				position:relative;
+				float:left;
+				width:100%;
+				height:100%;
+				border:1px dashed black;
+			}
+		</style>
+<link rel="shortcut icon" type="image/png" href="http://www.patrick-wied.at/img/favicon.png" />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+</head>
+<body>
+<div id="main">
+<div id="heatmapArea">
+
+</div>
+
+<script type="text/javascript" src="heatmap.js"></script>
+<script type="text/javascript" src="heatmap-gmaps.js"></script>
+<!--<script type="text/javascript" src="srf_test_d.js"></script>-->
+<script type="text/javascript" src="myheatmapdata.js"></script>
+<script type="text/javascript">
+
+var map;
+var heatmap; 
+
+window.onload = function(){
+
+	var myLatlng = new google.maps.LatLng(39.915, 116.404);
+	
+	var myOptions = {
+	  zoom: 11,
+	  center: myLatlng,
+	  mapTypeId: google.maps.MapTypeId.ROADMAP,
+	  disableDefaultUI: false,
+	  scrollwheel: true,
+	  draggable: true,
+	  navigationControl: true,
+	  mapTypeControl: false,
+	  scaleControl: true,
+	  disableDoubleClickZoom: false
+	};
+	map = new google.maps.Map(document.getElementById("heatmapArea"), myOptions);
+	
+	heatmap = new HeatmapOverlay(map, {"radius":15, "visible":true, "opacity":60});
+	
+	google.maps.event.addListenerOnce(map, "idle", function(){
+		heatmap.setDataSet(testData);
+	});
+};
+
+</script>
+</body>
+</html>
