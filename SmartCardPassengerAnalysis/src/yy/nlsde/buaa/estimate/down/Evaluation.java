@@ -33,26 +33,43 @@ public class Evaluation {
 		OutToFile.outToFile(list, filename);
 	}
 
-	private final int NO_PATTERN = 1;
-	private final int MISS_PATTERN = 2;
-	private final int WRONG_PATTERN = 3;
-	private final int CORRECT_PATTERN = 4;
-	private final int CORRECT_DOWN = 5;
-	private final int WRONG_DOWN = 6;
 	private final int TOTAL_NUM = 0;
+	private final int NO_PATTERN = 1;// 无此人模式
+	private final int MISS_PATTERN = 2;// 无对应时段模式
+	private final int WRONG_PATTERN = 3;// 对应时段模式匹配错误
+	private final int CORRECT_PATTERN = 4;// 对应时段模式匹配正确
+	private final int CORRECT_DOWN = 5;// 下车位置匹配正确
+	private final int WRONG_DOWN = 6;// 下车位置匹配错误
 
-//	[101072, 40078, 19232, 37493, 4269, 7222, 34540]
-	
+	//下车匹配过程中相关参数
+	private final int DIRECT_MATCH = 7;// 直接匹配成功
+	private final int MORNING_MATCH = 8;// 最后一次乘车，以早上模式匹配
+	private final int TEMP_MATCH = 9;// 降低条件后匹配
+	private final int TEMPMORNING_MATCH = 10;// 降低条件后早上匹配
+	private final int NODOWN_CHOOSE = 11;// 没有下车匹配选择
+
+	// 2013.8.1:[101072, 40078, 19232, 37493, 4269, 7222, 34540]
+
+	/**
+	 * 关于最终评价的说明： </br>
+	 * 1.总数以TOTAL_NUM-NO_PATTERN计，因为学习的时期和实验评价的时期不同</br> 
+	 * 2.WRONG_PATTERN代表偶发出行量，如果以分钟为单位结果会更好</br>
+	 * 3.理论上通过修改下车推测方法的参数，可以实现CORRECT_PATTERN的推测量，甚至更多</br>
+	 * 4.下车匹配过程中参数有利于调整下车匹配方法</br>
+	 * 5.NODOWN_CHOOSE是肯定推不出来的</br>
+	 */
+
 	private int[] result;
 
 	private IPatternService ips;
 
 	private static final int DST = 1000;// 相同空间判定阈值，m
+	// TODO:临时改成小时
 	private static final int TST = 2;// 乘车时间范围阈值，m
 
 	public Evaluation() {
 		ips = ServiceFatory.getPatternService();
-		result = new int[7];
+		result = new int[12];
 		result[NO_PATTERN] = 0;
 		result[MISS_PATTERN] = 0;
 		result[WRONG_PATTERN] = 0;
@@ -60,6 +77,12 @@ public class Evaluation {
 		result[CORRECT_DOWN] = 0;
 		result[WRONG_DOWN] = 0;
 		result[TOTAL_NUM] = 0;
+
+		result[DIRECT_MATCH] = 0;
+		result[MORNING_MATCH] = 0;
+		result[TEMP_MATCH] = 0;
+		result[TEMPMORNING_MATCH] = 0;
+		result[NODOWN_CHOOSE] = 0;
 	}
 
 	public String getResult() {
@@ -107,7 +130,7 @@ public class Evaluation {
 	}
 
 	private PatternBean getCorrectPattern(List<PatternBean> pl, CardBean card) {
-		if (pl==null||pl.size() <= 0) {
+		if (pl == null || pl.size() <= 0) {
 			result[NO_PATTERN]++;
 			return null;
 		}
@@ -139,7 +162,8 @@ public class Evaluation {
 	}
 
 	private boolean isCorrectPattern(CardBean card, PatternBean cp) {
-		if (inSpaceScale(card, cp))
+		PatternBean tpb = new PatternBean(card);
+		if (inSpaceScale(tpb, cp))
 			return true;
 		return false;
 	}
@@ -171,27 +195,32 @@ public class Evaluation {
 		// get the correct down pattern
 		PatternBean corPb = null;
 		for (PatternBean tp : tpl) {
-			if (stweight>0&&tp.getWeight() > stweight / 2) {
+			if (stweight > 0 && tp.getWeight() > stweight / 2) {
+				result[DIRECT_MATCH]++;
 				corPb = tp;
 			}
 		}
-		// the last down need to find the morning up 
+		// the last down need to find the morning up
 		if (corPb == null) {
 			for (PatternBean tp : pl) {
-				if (stweight>0&&tp.getWeight() > stweight / 2) {
+				if (stweight > 0 && tp.getWeight() > stweight / 2) {
+					result[MORNING_MATCH]++;
 					corPb = tp;
 				}
 			}
 		}
 		// low down the filter
 		if (corPb == null && tpl.size() > 0) {
+			result[TEMP_MATCH]++;
 			corPb = tpl.get(0);
 		}
 		if (corPb == null && pl.size() > 0) {
+			result[TEMPMORNING_MATCH]++;
 			corPb = pl.get(0);
 		}
 		// no pattern can find
 		if (corPb == null) {
+			result[NODOWN_CHOOSE]++;
 			return false;
 		}
 		return inSpaceScale(card, corPb);

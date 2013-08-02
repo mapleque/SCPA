@@ -26,6 +26,7 @@ public class PatternBean {
 
 	protected PatternBean(CardBean card) {
 		try {
+			//TODO:临时改成小时
 			String timestr = card.getUpTime(CardBean.HOUR);
 			if (timestr == null || timestr.length() != 2) {
 				this.avilable = false;
