@@ -16,10 +16,15 @@ public class ConnectionManager {
 	private final static String c3p0Properties = "conf"+File.separator+"c3p0.properties";
 	
 	private ConnectionManager() throws Exception {
-		Properties p = new Properties();
+		Properties props = new Properties();
 		FileInputStream in=new FileInputStream(c3p0Properties);
-		p.load(in);
+		props.load(in);
 		ds = new ComboPooledDataSource();
+		
+		ds.setDriverClass(props.getProperty("driverClass"));
+		ds.setJdbcUrl(props.getProperty("jdbcUrl"));
+		ds.setUser(props.getProperty("user"));
+		ds.setPassword(props.getProperty("password"));
 	}
 
 	public static final ConnectionManager getInstance() {

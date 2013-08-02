@@ -12,15 +12,14 @@
 			#main {
 				position:relative;
 				width:100%;
-				padding:20px;
-				margin:auto;
+				padding:0px;
+				margin:0;
 			}
 			#heatmapArea {
 				position:relative;
 				float:left;
 				width:100%;
 				height:100%;
-				border:1px dashed black;
 			}
 		</style>
 <link rel="shortcut icon" type="image/png" href="http://www.patrick-wied.at/img/favicon.png" />
@@ -32,11 +31,11 @@
 <div id="heatmapArea">
 
 </div>
-
+</div>
 <script type="text/javascript" src="heatmap.js"></script>
 <script type="text/javascript" src="heatmap-gmaps.js"></script>
 <!--<script type="text/javascript" src="srf_test_d.js"></script>-->
-<script type="text/javascript" src="myheatmapdata.js"></script>
+<script type="text/javascript" src="../../regionData/20120709/181.js"></script>
 <script type="text/javascript">
 
 var map;
@@ -44,7 +43,7 @@ var heatmap;
 
 window.onload = function(){
 
-	var myLatlng = new google.maps.LatLng(39.915, 116.404);
+	var myLatlng = new google.maps.LatLng(39.935, 116.404);
 	
 	var myOptions = {
 	  zoom: 11,
@@ -60,10 +59,10 @@ window.onload = function(){
 	};
 	map = new google.maps.Map(document.getElementById("heatmapArea"), myOptions);
 	
-	heatmap = new HeatmapOverlay(map, {"radius":15, "visible":true, "opacity":60});
+	heatmap = new HeatmapOverlay(map, {"radius":22, "visible":true, "opacity":80});
 	
 	google.maps.event.addListenerOnce(map, "idle", function(){
-		heatmap.setDataSet(testData);
+		heatmap.setDataSet(data);
 	});
 };
 

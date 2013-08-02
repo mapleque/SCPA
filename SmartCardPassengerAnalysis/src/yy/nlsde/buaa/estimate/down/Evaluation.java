@@ -11,9 +11,10 @@ import yy.nlsde.buaa.base.constant.OutToFile;
 public class Evaluation {
 	public static void main(String[] args) {
 		System.out.println("start time:" + System.currentTimeMillis());
-		String[] dates = { "20120709", "20120710", "20120711", "20120712",
-				"20120713", "20120716", "20120717", "20120718", "20120719",
-				"20120723", "20120724", "20120725", "20120726", "20120727" };
+//		String[] dates = { "20120709", "20120710", "20120711", "20120712",
+//				"20120713", "20120716", "20120717", "20120718", "20120719",
+//				"20120723", "20120724", "20120725", "20120726", "20120727" };
+		String[] dates={"20120727"};
 		List<String> rl = new ArrayList<String>();
 		for (String date : dates) {
 			Evaluation e = new Evaluation();
@@ -49,6 +50,7 @@ public class Evaluation {
 	private final int NODOWN_CHOOSE = 11;// 没有下车匹配选择
 
 	// 2013.8.1:[101072, 40078, 19232, 37493, 4269, 7222, 34540]
+	// 2012.8.2:[40220, 12607, 5888, 8246, 13479, 6154, 15571, 11183, 5129, 5413, 0, 0]
 
 	/**
 	 * 关于最终评价的说明： </br>
@@ -198,6 +200,7 @@ public class Evaluation {
 			if (stweight > 0 && tp.getWeight() > stweight / 2) {
 				result[DIRECT_MATCH]++;
 				corPb = tp;
+				break;
 			}
 		}
 		// the last down need to find the morning up
@@ -206,6 +209,7 @@ public class Evaluation {
 				if (stweight > 0 && tp.getWeight() > stweight / 2) {
 					result[MORNING_MATCH]++;
 					corPb = tp;
+					break;
 				}
 			}
 		}
