@@ -9,8 +9,10 @@ import java.util.List;
 import yy.nlsde.buaa.base.constant.OutToFile;
 
 public class Evaluation {
+	
+	public static long timestamp;
 	public static void main(String[] args) {
-		System.out.println("start time:" + System.currentTimeMillis());
+		System.out.println("start time:" + (timestamp=System.currentTimeMillis()));
 //		String[] dates = { "20120709", "20120710", "20120711", "20120712",
 //				"20120713", "20120716", "20120717", "20120718", "20120719",
 //				"20120723", "20120724", "20120725", "20120726", "20120727" };
@@ -54,6 +56,39 @@ public class Evaluation {
 	//[101072, 40078, 19232, 37493, 4269, 7222, 34540]
 	// 2012.8.2:DST=1000 TST=2
 	//[40220, 12607, 5888, 8246, 13479, 6154, 15571, 11183, 5129, 5413, 0, 0]
+	/*2012.8.5
+	6450000:1s
+	result at DST=5000 and TST=3:
+	TOTAL_NUM:60785
+	NO_PATTERN:16468	27.092210249239123%
+	MISS_PATTERN:5955	9.796824874557867%
+	WRONG_PATTERN:10689	17.584930492720243%
+	CORRECT_PATTERN:27673	45.52603438348277%
+	CORRECT_DOWN:20165	45.50172619987815%
+	WRONG_DOWN:24152	54.49827380012186%
+	DIRECT_MATCH:17801	40.16743010582846%
+	MORNING_MATCH:15287	34.49466344743552%
+	TEMP_MATCH:16468	37.15955502403141%
+	TEMPMORNING_MATCH:5955	13.437281404427196%
+	NODOWN_CHOOSE:0	0.0%
+	********************************************
+	6450000:1s
+	result at DST=10000 and TST=4:
+	TOTAL_NUM:60902
+	NO_PATTERN:16306	26.774161768086437%
+	MISS_PATTERN:4237	6.957078585268135%
+	WRONG_PATTERN:6908	11.342813043906604%
+	CORRECT_PATTERN:33451	54.925946602738826%
+	CORRECT_DOWN:29407	65.94089155978115%
+	WRONG_DOWN:15189	34.05910844021886%
+	DIRECT_MATCH:19368	43.42990402726702%
+	MORNING_MATCH:18528	41.546327024845276%
+	TEMP_MATCH:2463	5.522916853529464%
+	TEMPMORNING_MATCH:4237	9.500852094358239%
+	NODOWN_CHOOSE:0	0.0%
+	********************************************
+	
+	*/
 
 	/**
 	 * 关于最终评价的说明： </br>
@@ -69,9 +104,9 @@ public class Evaluation {
 	private IPatternService ips;
 
 	//TODO:修改阈值实验
-	private static final int DST = 1000;// 相同空间判定阈值，m
+	private static final int DST = 10000;// 相同空间判定阈值，m
 	// TODO:临时改成小时
-	private static final int TST = 2;// 乘车时间范围阈值，m
+	private static final int TST = 4;// 乘车时间范围阈值，m
 
 	public Evaluation() {
 		ips = ServiceFatory.getPatternService();
@@ -104,25 +139,33 @@ public class Evaluation {
 		in.setCardDate(dates);
 
 		int num = 0;
+		int rand=0;
 		CardBean card;
 		while ((card = in.getCardInfo()) != null) {
 			num++;
 			if (num % 10000 == 0){
-				System.out.println(num + ":" + System.currentTimeMillis());
+				long tt= System.currentTimeMillis();
+				System.out.println(num + ":" +(tt-timestamp)/1000+"s");
+				timestamp=tt;
 				System.out.println("result at DST="+DST+" and TST="+TST+":");
-				System.out.println("NO_PATTERN:"+result[NO_PATTERN]+"&"+result[NO_PATTERN]/(double)num);
-				System.out.println("MISS_PATTERN:"+result[MISS_PATTERN]+"&"+result[MISS_PATTERN]/(double)num);
-				System.out.println("WRONG_PATTERN:"+result[WRONG_PATTERN]+"&"+result[WRONG_PATTERN]/(double)num);
-				System.out.println("CORRECT_PATTERN:"+result[CORRECT_PATTERN]+"&"+result[CORRECT_PATTERN]/(double)num);
-				System.out.println("CORRECT_DOWN:"+result[CORRECT_DOWN]+"&"+result[CORRECT_DOWN]/(double)num);
-				System.out.println("WRONG_DOWN:"+result[WRONG_DOWN]+"&"+result[WRONG_DOWN]/(double)(num-result[NO_PATTERN]));
-				System.out.println("DIRECT_MATCH:"+result[DIRECT_MATCH]+"&"+result[DIRECT_MATCH]/(double)(num-result[NO_PATTERN]));
-				System.out.println("MORNING_MATCH:"+result[MORNING_MATCH]+"&"+result[MORNING_MATCH]/(double)(num-result[NO_PATTERN]));
-				System.out.println("TEMP_MATCH:"+result[NO_PATTERN]+"&"+result[NO_PATTERN]/(double)(num-result[NO_PATTERN]));
-				System.out.println("TEMPMORNING_MATCH:"+result[TEMPMORNING_MATCH]+"&"+result[TEMPMORNING_MATCH]/(double)(num-result[NO_PATTERN]));
-				System.out.println("NODOWN_CHOOSE:"+result[NODOWN_CHOOSE]+"&"+result[NODOWN_CHOOSE]/(double)(num-result[NO_PATTERN]));
+				System.out.println("TOTAL_NUM:"+result[TOTAL_NUM]);
+				System.out.println("NO_PATTERN:"+result[NO_PATTERN]+"\t"+result[NO_PATTERN]/(double)result[TOTAL_NUM]*100+"%");
+				System.out.println("MISS_PATTERN:"+result[MISS_PATTERN]+"\t"+result[MISS_PATTERN]/(double)result[TOTAL_NUM]*100+"%");
+				System.out.println("WRONG_PATTERN:"+result[WRONG_PATTERN]+"\t"+result[WRONG_PATTERN]/(double)result[TOTAL_NUM]*100+"%");
+				System.out.println("CORRECT_PATTERN:"+result[CORRECT_PATTERN]+"\t"+result[CORRECT_PATTERN]/(double)result[TOTAL_NUM]*100+"%");
+				System.out.println("CORRECT_DOWN:"+result[CORRECT_DOWN]+"\t"+result[CORRECT_DOWN]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("WRONG_DOWN:"+result[WRONG_DOWN]+"\t"+result[WRONG_DOWN]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("DIRECT_MATCH:"+result[DIRECT_MATCH]+"\t"+result[DIRECT_MATCH]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("MORNING_MATCH:"+result[MORNING_MATCH]+"\t"+result[MORNING_MATCH]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("TEMP_MATCH:"+result[TEMP_MATCH]+"\t"+result[TEMP_MATCH]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("TEMPMORNING_MATCH:"+result[TEMPMORNING_MATCH]+"\t"+result[TEMPMORNING_MATCH]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
+				System.out.println("NODOWN_CHOOSE:"+result[NODOWN_CHOOSE]+"\t"+result[NODOWN_CHOOSE]/(double)(result[TOTAL_NUM]-result[NO_PATTERN])*100+"%");
 				System.out.println("********************************************");
 			}
+			if (num%100!=rand){
+				continue;
+			}
+			rand=(int)( Math.random()*99);
 			if (card.isAFCUp() || !card.isAvilable()) {
 				continue;
 			}
@@ -134,6 +177,10 @@ public class Evaluation {
 		result[TOTAL_NUM]++;
 		PassengerPattern pp = ips.getPattern(card.getCardID());
 		List<PatternBean> pl = pp.getPatternList();
+		if (pl == null || pl.size() <= 0) {
+			result[NO_PATTERN]++;
+			return;
+		}
 		PatternBean cp = getCorrectPattern(pl, card);
 		if (cp != null) {
 			if (isCorrectPattern(card, cp)) {
@@ -150,10 +197,6 @@ public class Evaluation {
 	}
 
 	private PatternBean getCorrectPattern(List<PatternBean> pl, CardBean card) {
-		if (pl == null || pl.size() <= 0) {
-			result[NO_PATTERN]++;
-			return null;
-		}
 		// get the most probably pattern
 		List<PatternBean> tl = new ArrayList<PatternBean>();
 		PatternBean cpb = new PatternBean(card);
