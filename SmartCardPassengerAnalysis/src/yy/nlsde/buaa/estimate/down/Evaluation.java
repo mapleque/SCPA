@@ -36,21 +36,24 @@ public class Evaluation {
 
 	private final int TOTAL_NUM = 0;
 	private final int NO_PATTERN = 1;// 无此人模式
-	private final int MISS_PATTERN = 2;// 无对应时段模式
-	private final int WRONG_PATTERN = 3;// 对应时段模式匹配错误
-	private final int CORRECT_PATTERN = 4;// 对应时段模式匹配正确
-	private final int CORRECT_DOWN = 5;// 下车位置匹配正确
-	private final int WRONG_DOWN = 6;// 下车位置匹配错误
+	private final int MISS_PATTERN = 2;// 无对应时段模式		//21.32%
+	private final int WRONG_PATTERN = 3;// 对应时段模式匹配错误	//29.86%
+	private final int CORRECT_PATTERN = 4;// 对应时段模式匹配正确		//48.81%
+	private final int CORRECT_DOWN = 5;// 下车位置匹配正确	//22.28%
+	private final int WRONG_DOWN = 6;// 下车位置匹配错误		//56.39%
+									//78.67%
 
 	//下车匹配过程中相关参数
-	private final int DIRECT_MATCH = 7;// 直接匹配成功
-	private final int MORNING_MATCH = 8;// 最后一次乘车，以早上模式匹配
-	private final int TEMP_MATCH = 9;// 降低条件后匹配
+	private final int DIRECT_MATCH = 7;// 直接匹配成功	//51.47%
+	private final int MORNING_MATCH = 8;// 最后一次乘车，以早上模式匹配	//23.61%
+	private final int TEMP_MATCH = 9;// 降低条件后匹配	//24.91%
 	private final int TEMPMORNING_MATCH = 10;// 降低条件后早上匹配
 	private final int NODOWN_CHOOSE = 11;// 没有下车匹配选择
 
-	// 2013.8.1:[101072, 40078, 19232, 37493, 4269, 7222, 34540]
-	// 2012.8.2:[40220, 12607, 5888, 8246, 13479, 6154, 15571, 11183, 5129, 5413, 0, 0]
+	// 2013.8.1:
+	//[101072, 40078, 19232, 37493, 4269, 7222, 34540]
+	// 2012.8.2:DST=1000 TST=2
+	//[40220, 12607, 5888, 8246, 13479, 6154, 15571, 11183, 5129, 5413, 0, 0]
 
 	/**
 	 * 关于最终评价的说明： </br>
@@ -65,6 +68,7 @@ public class Evaluation {
 
 	private IPatternService ips;
 
+	//TODO:修改阈值实验
 	private static final int DST = 1000;// 相同空间判定阈值，m
 	// TODO:临时改成小时
 	private static final int TST = 2;// 乘车时间范围阈值，m
@@ -103,8 +107,22 @@ public class Evaluation {
 		CardBean card;
 		while ((card = in.getCardInfo()) != null) {
 			num++;
-			if (num % 10000 == 0)
+			if (num % 10000 == 0){
 				System.out.println(num + ":" + System.currentTimeMillis());
+				System.out.println("result at DST="+DST+" and TST="+TST+":");
+				System.out.println("NO_PATTERN:"+result[NO_PATTERN]+"&"+result[NO_PATTERN]/(double)num);
+				System.out.println("MISS_PATTERN:"+result[MISS_PATTERN]+"&"+result[MISS_PATTERN]/(double)num);
+				System.out.println("WRONG_PATTERN:"+result[WRONG_PATTERN]+"&"+result[WRONG_PATTERN]/(double)num);
+				System.out.println("CORRECT_PATTERN:"+result[CORRECT_PATTERN]+"&"+result[CORRECT_PATTERN]/(double)num);
+				System.out.println("CORRECT_DOWN:"+result[CORRECT_DOWN]+"&"+result[CORRECT_DOWN]/(double)num);
+				System.out.println("WRONG_DOWN:"+result[WRONG_DOWN]+"&"+result[WRONG_DOWN]/(double)(num-result[NO_PATTERN]));
+				System.out.println("DIRECT_MATCH:"+result[DIRECT_MATCH]+"&"+result[DIRECT_MATCH]/(double)(num-result[NO_PATTERN]));
+				System.out.println("MORNING_MATCH:"+result[MORNING_MATCH]+"&"+result[MORNING_MATCH]/(double)(num-result[NO_PATTERN]));
+				System.out.println("TEMP_MATCH:"+result[NO_PATTERN]+"&"+result[NO_PATTERN]/(double)(num-result[NO_PATTERN]));
+				System.out.println("TEMPMORNING_MATCH:"+result[TEMPMORNING_MATCH]+"&"+result[TEMPMORNING_MATCH]/(double)(num-result[NO_PATTERN]));
+				System.out.println("NODOWN_CHOOSE:"+result[NODOWN_CHOOSE]+"&"+result[NODOWN_CHOOSE]/(double)(num-result[NO_PATTERN]));
+				System.out.println("********************************************");
+			}
 			if (card.isAFCUp() || !card.isAvilable()) {
 				continue;
 			}
@@ -123,11 +141,11 @@ public class Evaluation {
 			} else {
 				result[WRONG_PATTERN]++;
 			}
-			if (isCorrectDown(card, cp, pl)) {
-				result[CORRECT_DOWN]++;
-			} else {
-				result[WRONG_DOWN]++;
-			}
+		}
+		if (isCorrectDown(card,pl)) {
+			result[CORRECT_DOWN]++;
+		} else {
+			result[WRONG_DOWN]++;
 		}
 	}
 
@@ -170,7 +188,7 @@ public class Evaluation {
 		return false;
 	}
 
-	private boolean isCorrectDown(CardBean card, PatternBean cp,
+	private boolean isCorrectDown(CardBean card,
 			List<PatternBean> pl) {
 		Collections.sort(pl, new Comparator<PatternBean>() {
 			@Override
@@ -187,7 +205,7 @@ public class Evaluation {
 				flag = true;
 			}
 			if (flag) {
-				if (inSpaceScale(cpb, tp)) {
+				if (inSpaceScale(cpb, tp)&&tp.getWeight()>stweight) {
 					stweight = tp.getWeight();
 				} else {
 					tpl.add(tp);
