@@ -1,15 +1,15 @@
 1区域数据：
 	命名
-		area_data_HH.js 其中HH表示对应时间片
+		area__yyyy-MM-dd-HH.dat 其中HH表示对应时间片
 	格式
-		var area_datas=[data1,data2...datax],
+		[data1,data2...datax],
 			datax=[areas,num],
 			areas=[area1,area2...areax],
 			areax=[lon,lat]
 		其中lon是区域边界经度，lat是区域边界维度，num是对应区域客流量
 	示例
 		area_data_10.js
-		var area_datas = [
+		[
 				[
 						[ [ 116.256515, 39.995242 ], [ 116.252579, 39.971893 ],
 								[ 116.284775, 39.978338 ], [ 116.286515, 39.996882 ] ],
@@ -31,15 +31,15 @@
 		
 2.流向数据
 	命名
-		stream_data_HH.js 其中HH表示对应时间片
+		stream_yyyy-MM-dd-HH.dat
 	格式
-		var stream_datas=[data1,data2...datax],
+		[data1,data2...datax],
 			datax=[from,to,num],
 			from=[lon,lat],
 			to=[lon,lat]
 		其中lon是流向起止点经度，lat是流向起止点维度，num是对应流向客流量
 	示例
-		var stream_datas=
+		
 		[[116.404,39.915,116.533,40.012,10],
 		 [116.404,39.915,116.476,39.787,500],
 		 [116.404,39.915,116.308,39.998,7403],
@@ -48,9 +48,8 @@
 		
 3.chart数据
 	命名
-		area_HH_data.js 其中HH表示对应时间片
+		area_yyyy-MM-dd-HH.dat
 	格式
-		function StubbedData() {
 			str=title+"\n"
 			for (var i=0;i<time.length;i++){
 				str+=time[i]+up_num+up_rate+down_num+down_rate+"\n";
@@ -59,11 +58,8 @@
 			//up_num上车流量，up_rate上车流量变化幅度
 			//down_num下车流量，down_rate下车流量变化幅度
 			return str;
-		}
 		
 	示例
-		function StubbedData() {
-			return "" +
 			"time,下车,上车\n" +
 			"0:00,0,0,0,0\n" +
 			"1:00,0,0,0,0\n" +
@@ -88,5 +84,13 @@
 			"20:00,5921,1022,236,75\n" +
 			"21:00,325,23,32,12\n" +
 			"22:00,23,35,61,23\n" +
-			"23:00,2,4,12,10\n";
-			}
+			"23:00,2,4,12,10\n"
+
+4.聚集数据
+	命名
+		heat_yyyy-MM-dd-HH.dat
+	格式
+		{"max":阈值,data:[p_c,...]}
+		p_c={lat":123,lng:123,cout:123}
+	示例
+		{\"max\": 100,\"data\": [{\"lat\": 116.374068, \"lng\":39.907198, \"count\": 100},{\"lat\": 116.256515, \"lng\":39.995242, \"count\": 100}]}
