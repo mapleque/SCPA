@@ -11,7 +11,7 @@
 		ele.setAttribute("id","popup_div");
 		$(ele).css("top",e.pixel.y);
 		$(ele).css("left",e.pixel.x);
-		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="chart.html"></iframe>';
+		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="./jsp/chart.html"></iframe>';
 		document.body.appendChild(ele);
 	};
 	var havePopup=function(){

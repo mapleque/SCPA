@@ -35,7 +35,7 @@
 <script type="text/javascript" src="heatmap.js"></script>
 <script type="text/javascript" src="heatmap-gmaps.js"></script>
 <!--<script type="text/javascript" src="srf_test_d.js"></script>-->
-<script type="text/javascript" src="../../regionData/20120709/181.js"></script>
+<script type="text/javascript" src="myheatmapdata.js"></script>
 <script type="text/javascript">
 
 var map;
@@ -62,7 +62,7 @@ window.onload = function(){
 	heatmap = new HeatmapOverlay(map, {"radius":22, "visible":true, "opacity":80});
 	
 	google.maps.event.addListenerOnce(map, "idle", function(){
-		heatmap.setDataSet(data);
+		heatmap.setDataSet(testData);
 	});
 };
 

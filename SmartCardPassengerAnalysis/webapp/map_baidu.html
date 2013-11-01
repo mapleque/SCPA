@@ -39,68 +39,28 @@ input[type=range]:after {
 	content: attr(max);
 }
 </style>
-<script type="text/javascript" src="./jquery-1.8.2.js"></script>
+<script type="text/javascript" src="./js/jquery-1.8.2.js"></script>
 <script type="text/javascript"
 	src="http://api.map.baidu.com/api?v=1.5&ak=176929efc91f17f31e6b93636c7449c8">
 	
 </script>
-<script type="text/javascript" src="./arrow_forBMap.js"></script>
-<script type="text/javascript" src="./area_forBMap.js"></script>
-<script type="text/javascript" src="./application.js"></script>
+<script type="text/javascript" src="./js/arrow_forBMap.js"></script>
+<script type="text/javascript" src="./js/area_forBMap.js"></script>
+<script type="text/javascript" src="./js/application.js"></script>
+<script type="text/javascript" src="./js/GeoUtils.js"></script>
+<script type="text/javascript" src="./js/heatmap.js"></script>
+<script type="text/javascript" src="./js/bheatmap.js"></script>
 </head>
 <body>
 	<div id="container"></div>
-	<script type="text/javascript">
-		var map = new BMap.Map("container"); // 创建地图实例  
-		map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
-		map.addControl(new BMap.NavigationControl());
-		//map.addControl(new BMap.ScaleControl());
-		//map.addControl(new BMap.OverviewMapControl());
-		//map.addControl(new BMap.MapTypeControl());
-		function load() {
-			map.clearOverlays();
-			var MAXP = 10000;
-			var arr = new window.mapleque.arrow();
-
-			stream_datas.forEach(function(d, l) {
-				var st = Math.log(d[4]) / Math.log(MAXP);
-				if (st < 0)
-					st = 0;
-				arr.set("arr_" + l, {
-					x : d[0],
-					y : d[1]
-				}, {
-					x : d[2],
-					y : d[3]
-				}, st);
-				arr.paint(map);
-			});
-
-			var are = new window.mapleque.area();
-			area_datas.forEach(function(d, l) {
-				var path = [];
-				d[0].forEach(function(p) {
-					path.push({
-						x : p[0],
-						y : p[1]
-					});
-				});
-				var st = Math.log(d[1]) / Math.log(MAXP);
-				if (st < 0)
-					st = 0;
-				are.set("are_" + l, path, st);
-				are.paint(map);
-			});
-		}
-	</script>
-
 	<div class="opt">
 		<div>
 			<label>时间：</label><span id="time_value">7</span>:00
 		</div>
 		<div>
-			<input id="time" style="width: 100%" type="range" name="time" min="0" max="23"
-				step="1" list="timelist" onchange="showValue(this.value)" value="7"></input>
+			<input id="time" style="width: 100%" type="range" name="time" min="0"
+				max="23" step="1" list="timelist" onchange="showValue(this.value)"
+				value="7"></input>
 			<datalist id="timelist">
 				<option value="0">
 				<option value="1">
@@ -135,23 +95,78 @@ input[type=range]:after {
 			</script>
 		</div>
 		<div>
-			<label>日期：</label><input id="date" type="date" name="date" min="2011-01-01"
-				max="2014-01-01" value="2013-05-30" onchange="init();" />
+			<label>日期：</label><input id="date" type="date" name="date"
+				min="2011-01-01" max="2014-01-01" value="2013-05-30"
+				onchange="init();" />
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	var map = new BMap.Map("container"); // 创建地图实例  
+	map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+	map.addControl(new BMap.NavigationControl());
+	//map.addControl(new BMap.ScaleControl());
+	//map.addControl(new BMap.OverviewMapControl());
+	//map.addControl(new BMap.MapTypeControl());
+	function heat(){
+		var heatmap = new HeatmapOverlay(map, {"radius":22, "visible":true, "opacity":50});
+		map.addOverlay(heatmap);
+		heatmap.setDataSet(testData);
+	}
+	function load() {
+		map.clearOverlays();
+		var MAXP = 10000;
+		var arr = new window.mapleque.arrow();
+
+		stream_datas.forEach(function(d, l) {
+			var st = Math.log(d[4]) / Math.log(MAXP);
+			if (st < 0)
+				st = 0;
+			arr.set("arr_" + l, {
+				x : d[0],
+				y : d[1]
+			}, {
+				x : d[2],
+				y : d[3]
+			}, st);
+			arr.paint(map);
+		});
+
+		var are = new window.mapleque.area();
+		area_datas.forEach(function(d, l) {
+			var path = [];
+			d[0].forEach(function(p) {
+				path.push({
+					x : p[0],
+					y : p[1]
+				});
+			});
+			var st = Math.log(d[1]) / Math.log(MAXP);
+			if (st < 0)
+				st = 0;
+			are.set("are_" + l, path, st);
+			are.paint(map);
+		});
+		
+	}
+</script>
 <script>
-	function init(){
-		var v=document.getElementById("time").value;
-		var d=document.getElementById("date").value;//d: 2012-05-30 
-		$.get("./stream_data_"+v+".jsp", function(sres) {
+	function init() {
+		var t = document.getElementById("time").value;
+		var d = document.getElementById("date").value;//d: 2012-05-30 
+		$.get("./jsp/stream_data.jsp?d=" + d + "&t=" + t + "", function(sres) {
 			stream_datas = JSON.parse(sres);
-			$.get("./area_data_"+v+".jsp", function(ares) {
+			$.get("./jsp/area_data.jsp?d=" + d + "&t=" + t + "", function(ares) {
 				area_datas = JSON.parse(ares);
 				load();
+				$.get("./jsp/heat_data.jsp?d=" + d + "&t=" + t + "", function(hres) {
+					testData=JSON.parse(hres);
+					heat();
+				});
 			});
 		});
 	}
 	init();
+	heat();
 </script>
 </html>
