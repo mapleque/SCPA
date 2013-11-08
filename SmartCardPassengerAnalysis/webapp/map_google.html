@@ -72,10 +72,10 @@ input[type=range]:after {
 		heatmap = new HeatmapOverlay(map, {
 			"radius" : 3,
 			"visible" : true,
-			"opacity" : 30
+			"opacity" : 20
 		});
 		google.maps.event.addListener(map, "idle", function() {
-			testData.max = 10;
+			testData.max = 100;
 			heatmap.setDataSet(testData);
 		});
 		init();

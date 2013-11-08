@@ -60,19 +60,16 @@
 		});
 		google.maps.event.addListener(polygon,"mouseover", function(a) {
 			return function(e){
-			console.log("in");
 			window.mapleque.application.popup(a,e);
 			};
 		}(a.id));
 		google.maps.event.addListener(polygon,"mouseout", function(a) {
 			return function(e){
-			console.log("out:");
 			window.mapleque.application.remove_popup(a,e);
 			};
 		}(a.id));
 		google.maps.event.addListener(polygon,"mousemove", function(a) {
 			return function(e){
-			console.log("move:");
 			window.mapleque.application.move_popup(a,e);
 			};
 		}(a.id));

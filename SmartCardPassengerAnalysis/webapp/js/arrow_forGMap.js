@@ -66,7 +66,6 @@
 			strokeWeight : st * 10,
 			strokeOpacity : 0.8
 		});
-		console.log("color-weight", clt, st * 10);
 		 google.maps.event.addListener(polyline, "mouseover", function(a) {
 			return function(e) {
 				window.mapleque.application.popup(a, e);
@@ -74,13 +73,11 @@
 		}(a.id));
 		google.maps.event.addListener(polyline, "mouseout", function(a) {
 			return function(e) {
-				console.log("out");
 				window.mapleque.application.remove_popup(a, e);
 			};
 		}(a.id));
 		google.maps.event.addListener(polyline, "mousemove", function(a) {
 			return function(e) {
-				console.log("move:");
 				window.mapleque.application.move_popup(a, e);
 			};
 		}(a.id));

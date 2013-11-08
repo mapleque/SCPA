@@ -49,10 +49,8 @@
 	
 	app.strong2color=function(st){
 		st=parseInt((1-st)*255);
-		var cl=st+st*256+50*256*256;
-		console.log(cl);
+		var cl=st+st*256+250*256*256;
 		cl=cl.toString(16);
-		console.log(cl);
 		return "#"+cl;
 	};
 	window.mapleque.application = app;
