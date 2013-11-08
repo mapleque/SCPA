@@ -9,8 +9,8 @@
 		var ele=document.createElement("div");
 		ele.setAttribute("class", "popup");
 		ele.setAttribute("id","popup_div");
-		$(ele).css("top",e.pixel.y);
-		$(ele).css("left",e.pixel.x);
+		$(ele).css("top",e.Xa.y);
+		$(ele).css("left",e.Xa.x);
 		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="./jsp/chart.html"></iframe>';
 		document.body.appendChild(ele);
 	};
@@ -19,8 +19,8 @@
 	};
 	var movePopup=function(e){
 		var ele=document.getElementById("popup_div");
-		$(ele).css("top",e.pixel.y);
-		$(ele).css("left",e.pixel.x);
+		$(ele).css("top",e.Xa.y);
+		$(ele).css("left",e.Xa.x);
 	};
 	var removePopup=function(){
 		var ele=document.getElementById("popup_div");
@@ -49,7 +49,7 @@
 	
 	app.strong2color=function(st){
 		st=parseInt((1-st)*255);
-		var cl=st+st*256+250*256*256;
+		var cl=st+st*256+50*256*256;
 		console.log(cl);
 		cl=cl.toString(16);
 		console.log(cl);
