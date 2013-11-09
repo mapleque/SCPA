@@ -66,21 +66,28 @@
 			strokeWeight : st * 10,
 			strokeOpacity : 0.8
 		});
-		 google.maps.event.addListener(polyline, "mouseover", function(a) {
+//		google.maps.event.addListener(polyline, "mouseover", function(a) {
+//			return function(e) {
+//				window.mapleque.application.popup(a, e);
+//			};
+//		}(a.id));
+//		google.maps.event.addListener(polyline, "mouseout", function(a) {
+//			return function(e) {
+//				window.mapleque.application.remove_popup(a, e);
+//			};
+//		}(a.id));
+//		google.maps.event.addListener(polyline, "mousemove", function(a) {
+//			return function(e) {
+//				window.mapleque.application.move_popup(a, e);
+//			};
+//		}(a.id));
+		
+		google.maps.event.addListener(polyline, "click", function(a) {
 			return function(e) {
 				window.mapleque.application.popup(a, e);
 			};
 		}(a.id));
-		google.maps.event.addListener(polyline, "mouseout", function(a) {
-			return function(e) {
-				window.mapleque.application.remove_popup(a, e);
-			};
-		}(a.id));
-		google.maps.event.addListener(polyline, "mousemove", function(a) {
-			return function(e) {
-				window.mapleque.application.move_popup(a, e);
-			};
-		}(a.id));
+		
 		polyline.setMap(context);
 		polyline = new google.maps.Polyline({
 			path : [ new google.maps.LatLng(h.h1.y, h.h1.x),

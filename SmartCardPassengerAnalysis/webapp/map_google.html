@@ -17,10 +17,23 @@ body {
 #map-canvas {
 	height: 100%
 }
+
 .popup {
 	width: 400px;
 	height: 300px;
 	position: absolute;
+}
+
+.popup_del{
+width: 50px;
+height: 50px;
+background: url("./img/button_grey_close.png");
+position: relative;
+top: -275px;
+left: 375px;
+}
+.popup_del:hover{
+background: url("./img/button_red_close.png");
 }
 
 .opt {
@@ -37,6 +50,20 @@ input[type=range]:after {
 	content: attr(max);
 }
 </style>
+<script type="text/javascript">
+function page_initial(){
+	var param = window.location.href;
+	var init_t = "8";
+	var init_d = "2013-05-31";
+	if (param.indexOf("?") > 0) {
+		init_t = param.substring(param.indexOf("t=") + 2, param.indexOf("&"));
+		init_d = param.substring(param.indexOf("d=") + 2);
+	}
+	document.getElementById("time").value = init_t;
+	document.getElementById("time_value").innerHTML = init_t;
+	document.getElementById("date").value = init_d;//d: 2012-05-30
+}
+</script>
 <script type="text/javascript" src="./js/jquery-1.8.2.js"></script>
 <script type="text/javascript"
 	src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -45,14 +72,15 @@ input[type=range]:after {
 <script type="text/javascript" src="./js/application.js"></script>
 <script type="text/javascript" src="./js/heatmap.js"></script>
 <script type="text/javascript" src="./js/heatmap-gmaps.js"></script>
-<script type="text/javascript" src="./js/myheatmapdata.js"></script>
 <script type="text/javascript">
 	var map;
 	var heatmap;
 	var stream_datas;
 	var area_datas;
-	
+
 	function initialize() {
+		page_initial();
+		
 		var myLatlng = new google.maps.LatLng(39.935, 116.404);
 
 		var myOptions = {
@@ -75,23 +103,30 @@ input[type=range]:after {
 			"opacity" : 20
 		});
 		google.maps.event.addListener(map, "idle", function() {
-			testData.max = 100;
-			heatmap.setDataSet(testData);
+			var t = document.getElementById("time").value;
+			var d = document.getElementById("date").value;//d: 2012-05-30 
+			$.get("./jsp/heat_data.jsp?d=" + d + "&t=" + t + "", function(hres) {
+				testData=JSON.parse(hres);
+				heatmap.setDataSet(testData);
+			});
+			//heatmap.setDataSet(testData);
 		});
 		init();
 	}
 	google.maps.event.addDomListener(window, 'load', initialize);
 
 	function load() {
+		var cdate = document.getElementById("date").value;//d: 2012-05-30 
+		
 		//map.clearOverlays();
 		var MAXP = 10000;
 		var arr = new window.mapleque.arrow();
-
+		
 		stream_datas.forEach(function(d, l) {
 			var st = Math.log(d[4]) / Math.log(MAXP);
 			if (st < 0)
 				st = 0;
-			arr.set("arr_" + l, {
+			arr.set("arr_" + l+"&d="+cdate, {
 				x : d[0],
 				y : d[1]
 			}, {
@@ -113,32 +148,32 @@ input[type=range]:after {
 			var st = Math.log(d[1]) / Math.log(MAXP);
 			if (st < 0)
 				st = 0;
-			are.set("are_" + l, path, st);
+			are.set("are_" + l+"&d="+cdate, path, st);
 			are.paint(map);
 		});
-
 	}
 </script>
 <script type="text/javascript">
-function test(){
-	var path = [
-	            new google.maps.LatLng(39.949227017559615,116.41707632263186),
-	            new google.maps.LatLng(39.94942441423325,116.42548773010256)
-	           ];    
-	           // 折线参数
-	           var polylineOptions = {
-	            path: [
-	   	            new google.maps.LatLng(39.949227017559615,116.41707632263186),
-		            new google.maps.LatLng(39.94942441423325,116.42548773010256)
-		           ],
-	            strokeColor: "#fa3232",  // 线条颜色 黑色
-	            strokeOpacity: 0.5,   // 透明度 50%
-	            strokeWeight: 8       // 宽度 5像素
-	           };
-	           // 创建一个Polyline的实例
-	           var polyline1 = new google.maps.Polyline(polylineOptions);
-	           polyline1.setMap(map);  // 设置显示到map上
-}
+	function test() {
+		var path = [
+				new google.maps.LatLng(39.949227017559615, 116.41707632263186),
+				new google.maps.LatLng(39.94942441423325, 116.42548773010256) ];
+		// 折线参数
+		var polylineOptions = {
+			path : [
+					new google.maps.LatLng(39.949227017559615,
+							116.41707632263186),
+					new google.maps.LatLng(39.94942441423325,
+							116.42548773010256) ],
+			strokeColor : "#fa3232", // 线条颜色 黑色
+			strokeOpacity : 0.5, // 透明度 50%
+			strokeWeight : 8
+		// 宽度 5像素
+		};
+		// 创建一个Polyline的实例
+		var polyline1 = new google.maps.Polyline(polylineOptions);
+		polyline1.setMap(map); // 设置显示到map上
+	}
 </script>
 </head>
 <body>
@@ -180,14 +215,14 @@ function test(){
 			<script>
 				function showValue(value) {
 					document.getElementById("time_value").innerHTML = value;
-					init();
+					change();
 				}
 			</script>
 		</div>
 		<div>
 			<label>日期：</label><input id="date" type="date" name="date"
 				min="2011-01-01" max="2014-01-01" value="2013-05-30"
-				onchange="init();" />
+				onchange="change();" />
 		</div>
 	</div>
 </body>
@@ -197,11 +232,23 @@ function test(){
 		var d = document.getElementById("date").value;//d: 2012-05-30 
 		$.get("./jsp/stream_data.jsp?d=" + d + "&t=" + t + "", function(sres) {
 			stream_datas = JSON.parse(sres);
-			$.get("./jsp/area_data.jsp?d=" + d + "&t=" + t + "", function(ares) {
-				area_datas = JSON.parse(ares);
-				load();
-			});
+			$.get("./jsp/area_data.jsp?d=" + d + "&t=" + t + "",
+					function(ares) {
+						area_datas = JSON.parse(ares);
+						load();
+					});
 		});
+	}
+
+	function change() {
+		var t = document.getElementById("time").value;
+		var d = document.getElementById("date").value;//d: 2012-05-30 
+		var href = window.location.href;
+		if (href.indexOf("?") <= 0) {
+			href = href + "?";
+		}
+		window.location.href=href.substring(0, href.indexOf("?"))+"?t="+t+"&d="+d;
+		//console.log(href.substring(0, href.indexOf("?")) + "?t=" + t + "&d="+ d);
 	}
 </script>
 </html>

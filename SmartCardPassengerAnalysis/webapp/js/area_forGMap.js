@@ -58,23 +58,30 @@
 			fillColor : clt,
 			fileOpacity : st
 		});
-		google.maps.event.addListener(polygon,"mouseover", function(a) {
+//		google.maps.event.addListener(polygon,"mouseover", function(a) {
+//			return function(e){
+//			window.mapleque.application.popup(a,e);
+//			};
+//		}(a.id));
+//		google.maps.event.addListener(polygon,"mouseout", function(a) {
+//			return function(e){
+//			window.mapleque.application.remove_popup(a,e);
+//			};
+//		}(a.id));
+//		
+//		google.maps.event.addListener(polygon,"mousemove", function(a) {
+//			return function(e){
+//			window.mapleque.application.move_popup(a,e);
+//			};
+//		}(a.id));
+		
+		google.maps.event.addListener(polygon,"click", function(a) {
 			return function(e){
 			window.mapleque.application.popup(a,e);
 			};
 		}(a.id));
-		google.maps.event.addListener(polygon,"mouseout", function(a) {
-			return function(e){
-			window.mapleque.application.remove_popup(a,e);
-			};
-		}(a.id));
-		google.maps.event.addListener(polygon,"mousemove", function(a) {
-			return function(e){
-			window.mapleque.application.move_popup(a,e);
-			};
-		}(a.id));
-		polygon.setMap(context);
 		
+		polygon.setMap(context);
 	};
 
 	var area = new Function();

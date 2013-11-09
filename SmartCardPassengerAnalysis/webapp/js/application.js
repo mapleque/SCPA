@@ -11,7 +11,13 @@
 		ele.setAttribute("id","popup_div");
 		$(ele).css("top",e.Xa.y);
 		$(ele).css("left",e.Xa.x);
-		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="./jsp/chart.html"></iframe>';
+		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="./jsp/chart.jsp?id='+a+'"></iframe>';
+		
+		var del=document.createElement("div");
+		del.setAttribute("class", "popup_del");
+		del.setAttribute("id","popup_del");
+		del.onclick=function(){removePopup();};
+		ele.appendChild(del);
 		document.body.appendChild(ele);
 	};
 	var havePopup=function(){
@@ -29,13 +35,11 @@
 	
 	var app = {};
 	app.popup = function(a,e) {
-		console.log(a);
 		if (havePopup)
 			removePopup();
 		createPopup(a,e);
 	};
 	app.remove_popup = function(a) {
-		console.log(a);
 		if (havePopup())
 			removePopup();
 	};

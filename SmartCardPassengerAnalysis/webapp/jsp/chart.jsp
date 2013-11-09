@@ -1,3 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <%
+    String id=request.getParameter("id");
+    String d=request.getParameter("d");
+    %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +25,7 @@ html,body {
 	<script type="text/javascript">
 		var div = document.getElementById("graphdiv");
 		$(div).height($(window).height());
-		g = new Dygraph(div, StubbedData(), {
+		g = new Dygraph(div, "../data/chart_<%out.print(id+"_"+d);%>.csv", {
 			errorBars : true,
 			valueRange : [ 0, 15000 ]
 		}
