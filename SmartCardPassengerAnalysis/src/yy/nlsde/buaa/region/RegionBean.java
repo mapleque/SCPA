@@ -11,5 +11,12 @@ public class RegionBean {
 			points=new ArrayList<PointBean>();
 		points.add(new PointBean(lon,lat));
 	}
+	
+	public void addPoint(PointBean p) {
+		if (points==null)
+			points=new ArrayList<PointBean>();
+		points.add(p);
+	}
+	
 
 }
