@@ -1,12 +1,10 @@
 package yy.nlsde.buaa.region;
 
-public class PointCountBean {
+public class PointCountBean extends PointBean{
 	
 	public final static int UP=1;
 	public final static int DOWN=2;
 
-	private double lon;
-	private double lat;
 	private String time;
 	private int ud;//up or down
 	private int count;
@@ -18,22 +16,6 @@ public class PointCountBean {
 		this.time=sub[2];
 		this.ud=Integer.parseInt(sub[3]);
 		this.count=Integer.parseInt(sub[4]);
-	}
-
-	public double getLon() {
-		return lon;
-	}
-
-	public void setLon(double lon) {
-		this.lon = lon;
-	}
-
-	public double getLat() {
-		return lat;
-	}
-
-	public void setLat(double lat) {
-		this.lat = lat;
 	}
 
 	public String getTime() {

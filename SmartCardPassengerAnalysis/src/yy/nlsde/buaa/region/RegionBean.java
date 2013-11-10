@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegionBean {
-	public List<String> points=null;
+	public List<PointBean> points=null;
 
 	public void addPoint(double lon, double lat) {
 		if (points==null)
-			points=new ArrayList<String>();
-		points.add(lon+","+lat);
+			points=new ArrayList<PointBean>();
+		points.add(new PointBean(lon,lat));
 	}
 
 }

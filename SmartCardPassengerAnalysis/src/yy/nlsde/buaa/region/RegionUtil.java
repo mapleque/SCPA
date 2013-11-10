@@ -154,4 +154,46 @@ public class RegionUtil {
 						.sqrt(Math.pow(bx - ox, 2) + Math.pow(by - oy, 2)));
 		return Math.acos(t) * 180 / Math.PI;
 	}
+	/*********************************************************************************************/
+	
+	
+	/*********************************************************************************************/
+	/**
+	 * 点在区域内
+	 * @param p
+	 * @param r
+	 * @return
+	 */
+	public static boolean pointInRegion(PointBean p, RegionBean r){
+		int polySides=r.points.size();
+		double[] polyY=new double[polySides];
+		double[] polyX=new double[polySides];
+		for (int i=0;i<polySides;i++){
+			polyY[i]=r.points.get(i).lat;
+			polyX[i]=r.points.get(i).lon;
+		}
+		return pointInPolygon(polySides,polyY,polyX,p.getLat(),p.getLon());
+	}
+	
+	private static boolean pointInPolygon(int polySides, double polyY[],
+			double polyX[], double x, double y) {
+		int i;
+		boolean oddNodes = false;
+		for (i = 0; i < polySides - 1; i++) {
+			if (polyY[i] < y && polyY[i + 1] >= y) {
+				if (polyY[i] * polyX[i + 1] + polyY[i + 1] * x + y * polyX[i] <= polyX[i + 1]
+						* y + polyY[i + 1] * polyX[i] + polyY[i] * x) {
+					oddNodes = !oddNodes;
+				}
+			}
+			if (polyY[i] > y && polyY[i + 1] <= y) {
+				if (polyY[i] * polyX[i + 1] + polyY[i + 1] * x + y * polyX[i] >= polyX[i + 1]
+						* y + polyY[i + 1] * polyX[i] + polyY[i] * x) {
+					oddNodes = !oddNodes;
+				}
+			}
+		}
+		return oddNodes;
+	}
+	/*********************************************************************************************/
 }
