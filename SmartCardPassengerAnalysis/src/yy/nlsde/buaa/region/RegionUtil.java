@@ -14,7 +14,18 @@ import yy.nlsde.buaa.base.constant.OutToFile;
 
 public class RegionUtil {
 	public static void main(String[] args) {
-		(new RegionUtil()).buildTempRegionFileFromStaPass("20120709");
+		//(new RegionUtil()).buildTempRegionFileFromStaPass("20120709");
+		
+		List<PointBean> list=new ArrayList<PointBean>();
+		list.add(new PointBean(0,1));
+		list.add(new PointBean(1,1));
+		list.add(new PointBean(1,0));
+		list.add(new PointBean(2,1));
+		list.add(new PointBean(1,2));
+		List<PointBean> edge=RegionUtil.Points2RegionEdge(list);
+		for (PointBean p:edge){
+			System.out.println(p);
+		}
 	}
 
 	private final static String OUT_PATH = "regionData";
@@ -116,14 +127,20 @@ public class RegionUtil {
 
 	private static PointBean getAPointToK(List<PointBean> list,
 			PointBean p, PointBean lp) {
+		if (p==lp){
+			lp=new PointBean(p.lon-1,p.lat);
+		}
 		PointBean np = null;
 		double theta = -1;
 		for (PointBean tp : list) {
+			if (tp==p){
+				continue;
+			}
 			if (theta == -1) {
 				np = tp;
-				theta = 180 - triangle(p, np, lp);
+				theta = 180 - triangle(p, tp, lp);
 			} else {
-				double tmtheta = 180 - triangle(p, np, lp);
+				double tmtheta = 180 - triangle(p, tp, lp);
 				if (tmtheta < theta) {
 					np = tp;
 					theta = tmtheta;

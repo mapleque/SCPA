@@ -27,4 +27,7 @@ public class PointBean {
 		this.lat = lat;
 	}
 
+	public String toString(){
+		return "x:"+lon+",y:"+lat;
+	}
 }
