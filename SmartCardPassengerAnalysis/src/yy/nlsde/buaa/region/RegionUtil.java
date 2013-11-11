@@ -23,9 +23,20 @@ public class RegionUtil {
 		list.add(new PointBean(2,1));
 		list.add(new PointBean(1,2));
 		List<PointBean> edge=RegionUtil.Points2RegionEdge(list);
+		RegionBean r=new RegionBean();
 		for (PointBean p:edge){
 			System.out.println(p);
+			r.addPoint(p);
 		}
+		System.out.println(pointInRegion(new PointBean(0,1),r));
+		System.out.println(pointInRegion(new PointBean(1,1),r));
+		System.out.println(pointInRegion(new PointBean(1,0),r));
+		System.out.println(pointInRegion(new PointBean(2,1),r));
+		System.out.println(pointInRegion(new PointBean(1,2),r));
+		System.out.println(pointInRegion(new PointBean(1,3),r));
+		System.out.println(pointInRegion(new PointBean(3,1),r));
+		System.out.println(pointInRegion(new PointBean(3,3),r));
+		System.out.println(pointInRegion(new PointBean(0,0),r));
 	}
 
 	private final static String OUT_PATH = "regionData";
@@ -178,6 +189,8 @@ public class RegionUtil {
 	 * @return
 	 */
 	public static boolean pointInRegion(PointBean p, RegionBean r) {
+		if (point2RegionDistence(p,r)<=0)
+			return true;
 		List<PointBean> edge=r.points;
 		int polySides = edge.size();
 		double[] polyY = new double[polySides];
@@ -232,7 +245,7 @@ public class RegionUtil {
 				}
 			}
 		}
-		return mind;
+		return mind>0?mind:0;
 	}
 	private static double distence(PointBean dp,PointBean p){
 		return distence(dp.lon,dp.lat,p.lon,p.lat);

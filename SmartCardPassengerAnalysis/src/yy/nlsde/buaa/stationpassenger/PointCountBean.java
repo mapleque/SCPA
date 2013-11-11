@@ -49,4 +49,16 @@ public class PointCountBean {
 	public void addOne(){
 		this.count++;
 	}
+	
+	public String getTime(){
+		if (this.ud==DOWN){
+			return "0_"+Integer.parseInt(this.time);
+		}
+		return Integer.parseInt(this.time)+"";
+	}
+	
+	public String getHeatString(){
+		return 
+				"{\"lat\":"+this.lat+",\"lng\":"+this.lon+",\"count\":"+this.count+"}";
+	}
 }
