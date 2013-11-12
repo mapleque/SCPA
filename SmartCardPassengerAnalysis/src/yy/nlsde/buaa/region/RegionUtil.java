@@ -1,16 +1,7 @@
 package yy.nlsde.buaa.region;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import yy.nlsde.buaa.base.constant.OutToFile;
 
 public class RegionUtil {
 	public static void main(String[] args) {
@@ -39,55 +30,6 @@ public class RegionUtil {
 		System.out.println(pointInRegion(new PointBean(0,0),r));
 	}
 
-	private final static String OUT_PATH = "regionData";
-	private static String sub_path = "tmp";
-
-	public void buildTempRegionFileFromStaPass(String date) {
-		sub_path = date;
-		PointCountReadIn in = new PointCountReadIn();
-		in.setDate(date);
-		HashMap<String, List<PointCountBean>> map = new HashMap<String, List<PointCountBean>>();
-		PointCountBean pcb = null;
-		while ((pcb = in.getPointCountBean()) != null) {
-			String key = pcb.getTime() + pcb.getUd();
-			if (!map.containsKey(key)) {
-				map.put(key, new ArrayList<PointCountBean>());
-			}
-			map.get(key).add(pcb);
-		}
-		for (String time : map.keySet()) {
-			this.outToFile(time, map.get(time));
-		}
-	}
-
-	public void outToFile(String time, List<PointCountBean> list) {
-		String filename = OUT_PATH + File.separator + sub_path + File.separator
-				+ time + ".js";
-		OutToFile.mkdir(filename, false);
-		try {
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(
-					new FileOutputStream(filename), "gbk"), true);
-			pw.println("var data={max:3500,data:[");
-			boolean first = true;
-			for (PointCountBean t : list) {
-				if (first) {
-					first = false;
-					pw.println("{lat: " + t.getLat() + ", lng: " + t.getLon()
-							+ ", count: " + t.getCount() + "}");
-				}
-				pw.println(",{lat: " + t.getLat() + ", lng: " + t.getLon()
-						+ ", count: " + t.getCount() + "}");
-			}
-			pw.println("]};");
-			pw.close();
-		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
-
 	/*********************************************************************************************/
 	/**
 	 * 点集覆盖凸多边形
@@ -100,12 +42,12 @@ public class RegionUtil {
 		// get min lat
 		PointBean minlat = getMinLatPoint(list);
 		vertexSet.add(minlat);
+		if (list.size()>1){
 		PointBean lastp = minlat;
-		// get another point which line to min lat point with min triangle from
-		// 0
+		// get another point which line to min lat point with min triangle from 0
 		PointBean ap = getAPointToK(list, minlat, lastp);
 		vertexSet.add(ap);
-
+		
 		// get another point to last point which line with min triangle from
 		// last line
 		while (true) {
@@ -115,6 +57,25 @@ public class RegionUtil {
 			vertexSet.add(nap);
 			lastp = ap;
 			ap = nap;
+		}
+		}
+		int nv=vertexSet.size();
+		if (nv==1){//一个点情况
+			PointBean tp=vertexSet.get(0);
+			vertexSet.remove(0);
+			vertexSet.add(new PointBean(tp.lon-0.01,tp.lat-0.01));
+			vertexSet.add(new PointBean(tp.lon+0.01,tp.lat-0.01));
+			vertexSet.add(new PointBean(tp.lon+0.01,tp.lat+0.01));
+			vertexSet.add(new PointBean(tp.lon-0.01,tp.lat+0.01));
+		}else if (nv==2){//两个点情况
+			PointBean tp0=vertexSet.get(0);
+			PointBean tp1=vertexSet.get(1);
+			vertexSet.remove(1);
+			vertexSet.remove(0);
+			vertexSet.add(new PointBean(tp0.lon-0.01,tp0.lat-0.01));
+			vertexSet.add(new PointBean(tp0.lon+0.01,tp0.lat-0.01));
+			vertexSet.add(new PointBean(tp1.lon+0.01,tp1.lat+0.01));
+			vertexSet.add(new PointBean(tp1.lon-0.01,tp1.lat+0.01));
 		}
 		return vertexSet;
 	}
@@ -247,7 +208,7 @@ public class RegionUtil {
 		}
 		return mind>0?mind:0;
 	}
-	private static double distence(PointBean dp,PointBean p){
+	public static double distence(PointBean dp,PointBean p){
 		return distence(dp.lon,dp.lat,p.lon,p.lat);
 	}
 
@@ -269,7 +230,7 @@ public class RegionUtil {
 	 * @return
 	 */
 	public static double point2RegionSimilar(PointBean p, RegionBean r) {
-		return 0;
+		return 100;
 	}
 	/*********************************************************************************************/
 }

@@ -16,7 +16,7 @@ public class PassengerCount {
 	public static void main(String[] args){
 		PassengerCount pc = new PassengerCount("20120709");
 		pc.count();
-//		pc.outTmpFile();
+		pc.outTmpFile();
 		pc.outHeatFile();
 	}
 	public static final int HEAT_MAX=300;

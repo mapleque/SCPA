@@ -1,4 +1,4 @@
-package yy.nlsde.buaa.region;
+package yy.nlsde.buaa.groupmobility;
 
 public class PointBean {
 	protected double lon;
@@ -22,9 +22,5 @@ public class PointBean {
 
 	public String toString() {
 		return lon + "-" + lat;
-	}
-	
-	public String toAreaString() {
-		return "["+lon + "," + lat+"]";
 	}
 }

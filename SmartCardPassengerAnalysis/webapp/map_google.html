@@ -24,16 +24,17 @@ body {
 	position: absolute;
 }
 
-.popup_del{
-width: 50px;
-height: 50px;
-background: url("./img/button_grey_close.png");
-position: relative;
-top: -275px;
-left: 375px;
+.popup_del {
+	width: 50px;
+	height: 50px;
+	background: url("./img/button_grey_close.png");
+	position: relative;
+	top: -275px;
+	left: 375px;
 }
-.popup_del:hover{
-background: url("./img/button_red_close.png");
+
+.popup_del:hover {
+	background: url("./img/button_red_close.png");
 }
 
 .opt {
@@ -51,18 +52,19 @@ input[type=range]:after {
 }
 </style>
 <script type="text/javascript">
-function page_initial(){
-	var param = window.location.href;
-	var init_t = "8";
-	var init_d = "2013-05-31";
-	if (param.indexOf("?") > 0) {
-		init_t = param.substring(param.indexOf("t=") + 2, param.indexOf("&"));
-		init_d = param.substring(param.indexOf("d=") + 2);
+	function page_initial() {
+		var param = window.location.href;
+		var init_t = "8";
+		var init_d = "2013-05-31";
+		if (param.indexOf("?") > 0) {
+			init_t = param.substring(param.indexOf("t=") + 2, param
+					.indexOf("&"));
+			init_d = param.substring(param.indexOf("d=") + 2);
+		}
+		document.getElementById("time").value = init_t;
+		document.getElementById("time_value").innerHTML = init_t;
+		document.getElementById("date").value = init_d;//d: 2012-05-30
 	}
-	document.getElementById("time").value = init_t;
-	document.getElementById("time_value").innerHTML = init_t;
-	document.getElementById("date").value = init_d;//d: 2012-05-30
-}
 </script>
 <script type="text/javascript" src="./js/jquery-1.8.2.js"></script>
 <script type="text/javascript"
@@ -80,7 +82,7 @@ function page_initial(){
 
 	function initialize() {
 		page_initial();
-		
+
 		var myLatlng = new google.maps.LatLng(39.935, 116.404);
 
 		var myOptions = {
@@ -105,10 +107,11 @@ function page_initial(){
 		google.maps.event.addListener(map, "idle", function() {
 			var t = document.getElementById("time").value;
 			var d = document.getElementById("date").value;//d: 2012-05-30 
-			$.get("./jsp/heat_data.jsp?d=" + d + "&t=" + t + "", function(hres) {
-				testData=JSON.parse(hres);
-				heatmap.setDataSet(testData);
-			});
+			$.get("./jsp/heat_data.jsp?d=" + d + "&t=" + t + "",
+					function(hres) {
+						testData = JSON.parse(hres);
+						heatmap.setDataSet(testData);
+					});
 			//heatmap.setDataSet(testData);
 		});
 		init();
@@ -117,16 +120,16 @@ function page_initial(){
 
 	function load() {
 		var cdate = document.getElementById("date").value;//d: 2012-05-30 
-		
+
 		//map.clearOverlays();
-		var MAXP = 10000;
+		var MAXP = 200000;
 		var arr = new window.mapleque.arrow();
-		
+
 		stream_datas.forEach(function(d, l) {
 			var st = Math.log(d[4]) / Math.log(MAXP);
 			if (st < 0)
 				st = 0;
-			arr.set("arr_" + l+"&d="+cdate, {
+			arr.set("arr_" + l + "&d=" + cdate, {
 				x : d[0],
 				y : d[1]
 			}, {
@@ -148,7 +151,7 @@ function page_initial(){
 			var st = Math.log(d[1]) / Math.log(MAXP);
 			if (st < 0)
 				st = 0;
-			are.set("are_" + l+"&d="+cdate, path, st);
+			are.set("are_" + l + "&d=" + cdate, path, st);
 			are.paint(map);
 		});
 	}
@@ -229,14 +232,14 @@ function page_initial(){
 <script>
 	function init() {
 		var t = document.getElementById("time").value;
-		var d = document.getElementById("date").value;//d: 2012-05-30 
-		$.get("./jsp/stream_data.jsp?d=" + d + "&t=" + t + "", function(sres) {
-			stream_datas = JSON.parse(sres);
-			$.get("./jsp/area_data.jsp?d=" + d + "&t=" + t + "",
-					function(ares) {
-						area_datas = JSON.parse(ares);
-						load();
-					});
+		var d = document.getElementById("date").value;//d: 2012-05-30
+		$.get("./jsp/area_data.jsp?d=" + d + "&t=" + t + "", function(ares) {
+			area_datas = JSON.parse(ares);
+			//$.get("./jsp/stream_data.jsp?d=" + d + "&t=" + t + "", function(sres) {
+			$.get("./jsp/stream_data.jsp?d=2013-05-31&t=7", function(sres) {
+				stream_datas = JSON.parse(sres);
+				load();
+			});
 		});
 	}
 
@@ -247,7 +250,8 @@ function page_initial(){
 		if (href.indexOf("?") <= 0) {
 			href = href + "?";
 		}
-		window.location.href=href.substring(0, href.indexOf("?"))+"?t="+t+"&d="+d;
+		window.location.href = href.substring(0, href.indexOf("?")) + "?t=" + t
+				+ "&d=" + d;
 		//console.log(href.substring(0, href.indexOf("?")) + "?t=" + t + "&d="+ d);
 	}
 </script>
