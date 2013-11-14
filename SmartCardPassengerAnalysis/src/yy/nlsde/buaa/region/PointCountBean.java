@@ -19,7 +19,7 @@ public class PointCountBean extends PointBean{
 	}
 
 	public String getTime() {
-		return time;
+		return Integer.parseInt(this.time)+"";
 	}
 
 	public void setTime(String time) {

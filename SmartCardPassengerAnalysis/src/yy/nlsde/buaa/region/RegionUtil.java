@@ -38,6 +38,8 @@ public class RegionUtil {
 	 * @param list
 	 * @return
 	 */
+	private static final double OFFSET=0.005;
+	
 	public static List<PointBean> Points2RegionEdge(List<PointBean> list) {
 		List<PointBean> vertexSet = new ArrayList<PointBean>();
 		// get min lat
@@ -64,19 +66,19 @@ public class RegionUtil {
 		if (nv==1){//一个点情况
 			PointBean tp=vertexSet.get(0);
 			vertexSet.remove(0);
-			vertexSet.add(new PointBean(tp.lon-0.01,tp.lat-0.01));
-			vertexSet.add(new PointBean(tp.lon+0.01,tp.lat-0.01));
-			vertexSet.add(new PointBean(tp.lon+0.01,tp.lat+0.01));
-			vertexSet.add(new PointBean(tp.lon-0.01,tp.lat+0.01));
+			vertexSet.add(new PointBean(tp.lon-OFFSET,tp.lat-OFFSET));
+			vertexSet.add(new PointBean(tp.lon+OFFSET,tp.lat-OFFSET));
+			vertexSet.add(new PointBean(tp.lon+OFFSET,tp.lat+OFFSET));
+			vertexSet.add(new PointBean(tp.lon-OFFSET,tp.lat+OFFSET));
 		}else if (nv==2){//两个点情况
 			PointBean tp0=vertexSet.get(0);
 			PointBean tp1=vertexSet.get(1);
 			vertexSet.remove(1);
 			vertexSet.remove(0);
-			vertexSet.add(new PointBean(tp0.lon-0.01,tp0.lat-0.01));
-			vertexSet.add(new PointBean(tp0.lon+0.01,tp0.lat-0.01));
-			vertexSet.add(new PointBean(tp1.lon+0.01,tp1.lat+0.01));
-			vertexSet.add(new PointBean(tp1.lon-0.01,tp1.lat+0.01));
+			vertexSet.add(new PointBean(tp0.lon-OFFSET,tp0.lat-OFFSET));
+			vertexSet.add(new PointBean(tp0.lon+OFFSET,tp0.lat-OFFSET));
+			vertexSet.add(new PointBean(tp1.lon+OFFSET,tp1.lat+OFFSET));
+			vertexSet.add(new PointBean(tp1.lon-OFFSET,tp1.lat+OFFSET));
 		}
 		return vertexSet;
 	}

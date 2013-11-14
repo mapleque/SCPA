@@ -14,9 +14,11 @@ import yy.nlsde.buaa.base.util.OutToFile;
 
 public class RegionDivide {
 	public static void main(String[] args){
-		RegionDivide rd=new RegionDivide();
-		rd.generalTheRegion("20120709");
+		RegionDivide rd=new RegionDivide("20120709");
+		rd.generalTheRegion();
+		rd.outTmpFile();
 	}
+	
 	
 	public static final int COUNT_TH=4000;
 	public static final int DISTENCE_TH=1500;
@@ -26,9 +28,12 @@ public class RegionDivide {
 	private final static String SERVICE_PATH="webapp/data";
 	
 	private String date;
-
-	public void generalTheRegion(String date){
+	private List<String> result=null; 
+	public RegionDivide(String date){
 		this.date=date;
+	}
+
+	public void generalTheRegion(){
 		PointCountReadIn in=new PointCountReadIn();
 		in.setDate(date);
 		HashMap<String,List<PointCountBean>> map=new HashMap<String,List<PointCountBean>>();
@@ -53,8 +58,16 @@ public class RegionDivide {
 			//DBSCAN
 			this.merge(result,pcb);
 		}
-		this.outTmpFile(result, time);
+		this.addResult(result,time);
 		this.outAreaFile(result, time);
+	}
+	private void addResult(List<RegionCountBean> list,String key){
+		if (result==null)
+			result=new ArrayList<String>();
+		for (RegionCountBean rcb:list){
+			String[] subkey=key.split("_");
+			result.add(subkey[0]+","+subkey[1]+","+rcb.toString());
+		}
 	}
 	
 	private void merge(List<RegionCountBean> list,PointCountBean pcb){
@@ -103,13 +116,13 @@ public class RegionDivide {
 		}
 		return mind>0?mind:0;
 	}	
-	private void outTmpFile(List<RegionCountBean> list,String filename){
-		OutToFile.outToFile(list, OUT_PATH+File.separator+date+File.separator+filename+".csv");
+	private void outTmpFile(){
+		OutToFile.outToFile(result, OUT_PATH+File.separator+date+".csv");
 	}
 	
 	private void outAreaFile(List<RegionCountBean> list,String key){
 		String[] subkey=key.split("_");
-		outToHeatFile(list,SERVICE_PATH+File.separator+"area"+File.separator+subkey[1]+File.separator+formatDate(date)+File.separator+Integer.parseInt(subkey[0])+".json");
+		outToHeatFile(list,SERVICE_PATH+File.separator+"area"+File.separator+subkey[1]+File.separator+formatDate(date)+File.separator+subkey[0]+".json");
 	}
 	private String formatDate(String date){
 		return date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8);
