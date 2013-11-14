@@ -80,18 +80,18 @@ public class PassengerCount {
 	}
 	
 	public void outHeatFile(){
-		List<PointCountBean> list=new ArrayList<PointCountBean>();
 		HashMap<String,List<PointCountBean>> tmap=new HashMap<String,List<PointCountBean>>();
 		for (String key:result.keySet()){
 			PointCountBean pb=result.get(key);
-			String time=pb.getTime();
+			String time=pb.getTime()+"_"+pb.getUd();
 			if (!tmap.containsKey(time)){
 				tmap.put(time, new ArrayList<PointCountBean>());
 			}
 			tmap.get(time).add(pb);
 		}
 		for(String key:tmap.keySet()){
-			outToHeatFile(tmap.get(key),SERVICE_PATH+File.separator+"heat_"+key+"_"+formatDate(date)+".json");
+			String[] subkey=key.split("_");
+			outToHeatFile(tmap.get(key),SERVICE_PATH+File.separator+"heat"+File.separator+subkey[1]+File.separator+formatDate(date)+File.separator+subkey[0]+".json");
 		}
 	}
 	private String formatDate(String date){

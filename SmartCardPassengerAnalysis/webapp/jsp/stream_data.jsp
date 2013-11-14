@@ -9,7 +9,7 @@ String t=request.getParameter("t");
 String path = request.getSession().getServletContext()
 .getRealPath("/");
 BufferedReader in = new BufferedReader(new InputStreamReader(
-new FileInputStream(path + "data/stream_" + t + "_" + d+".json"),
+new FileInputStream(path + "data/stream/" + d + "/" + t+".json"),
 "gbk"));
 String line = null;
 while ((line = in.readLine()) != null) {

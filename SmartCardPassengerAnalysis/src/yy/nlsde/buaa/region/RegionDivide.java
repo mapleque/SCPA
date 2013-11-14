@@ -34,7 +34,7 @@ public class RegionDivide {
 		HashMap<String,List<PointCountBean>> map=new HashMap<String,List<PointCountBean>>();
 		PointCountBean pcb=null;
 		while ((pcb=in.getPointCountBean())!=null){
-			String key=pcb.getTime();
+			String key=pcb.getTime()+"_"+pcb.getUd();
 			if (!map.containsKey(key)){
 				map.put(key, new ArrayList<PointCountBean>());
 			}
@@ -108,7 +108,8 @@ public class RegionDivide {
 	}
 	
 	private void outAreaFile(List<RegionCountBean> list,String key){
-		outToHeatFile(list,SERVICE_PATH+File.separator+"area_"+Integer.parseInt(key)+"_"+formatDate(date)+".json");
+		String[] subkey=key.split("_");
+		outToHeatFile(list,SERVICE_PATH+File.separator+"area"+File.separator+subkey[1]+File.separator+formatDate(date)+File.separator+Integer.parseInt(subkey[0])+".json");
 	}
 	private String formatDate(String date){
 		return date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8);
