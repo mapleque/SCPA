@@ -21,6 +21,6 @@ public class PointBean {
 	}
 
 	public String toString() {
-		return lon + "-" + lat;
+		return lon + "," + lat;
 	}
 }
