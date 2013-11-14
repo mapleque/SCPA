@@ -1,6 +1,6 @@
 package yy.nlsde.buaa.stationpassenger;
 
-import yy.nlsde.buaa.base.constant.CONSTANT;
+import yy.nlsde.buaa.base.util.CONSTANT;
 
 public class CardBean {
 	public final static int AFC = 1;

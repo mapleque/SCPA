@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import yy.nlsde.buaa.base.constant.OutToFile;
+import yy.nlsde.buaa.base.util.OutToFile;
 
 public class RegionDivide {
 	public static void main(String[] args){

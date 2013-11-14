@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import yy.nlsde.buaa.base.constant.OutToFile;
+import yy.nlsde.buaa.base.util.OutToFile;
 
 public class Evaluation {
 	

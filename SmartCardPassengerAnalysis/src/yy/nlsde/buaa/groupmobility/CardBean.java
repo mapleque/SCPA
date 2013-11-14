@@ -1,4 +1,4 @@
-package yy.nlsde.buaa.estimate.down;
+package yy.nlsde.buaa.groupmobility;
 
 import yy.nlsde.buaa.base.util.CONSTANT;
 
@@ -127,5 +127,22 @@ public class CardBean {
 			return null;
 		}
 	}
-
+	public String getDownTime(int type) {
+		int length = 6;
+		switch (type) {
+		case HOUR:
+			length = 2;
+			break;
+		case MIN:
+			length = 4;
+			break;
+		default:
+			break;
+		}
+		if (this.downTime != null && this.downTime.length() > 8) {
+			return this.downTime.substring(8, 8 + length);
+		} else {
+			return null;
+		}
+	}
 }

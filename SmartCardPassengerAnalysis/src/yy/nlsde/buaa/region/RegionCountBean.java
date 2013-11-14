@@ -3,6 +3,7 @@ package yy.nlsde.buaa.region;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class RegionCountBean extends RegionBean{
 	public List<PointBean> stations;
 

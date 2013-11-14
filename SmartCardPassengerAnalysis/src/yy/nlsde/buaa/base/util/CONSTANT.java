@@ -1,4 +1,4 @@
-package yy.nlsde.buaa.base.constant;
+package yy.nlsde.buaa.base.util;
 
 import java.io.BufferedReader;
 import java.io.File;
