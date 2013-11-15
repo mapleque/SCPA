@@ -23,7 +23,6 @@ public class RegionUtil {
 	 * @return
 	 */
 	public static PointBean getRegionCenter(RegionBean rb){
-		//TODO:
 		List<PointBean> points=rb.points;
 		double sumx=0;
 		double sumy=0;
