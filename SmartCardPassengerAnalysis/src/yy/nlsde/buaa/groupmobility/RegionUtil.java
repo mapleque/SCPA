@@ -3,17 +3,37 @@ package yy.nlsde.buaa.groupmobility;
 import java.util.List;
 
 public class RegionUtil {
+	
+	public static void main(String[] args){
+		RegionBean rb=new RegionBean();
+		rb.addPoint(0, 0);
+		rb.addPoint(1, 0);
+		rb.addPoint(1, 1);
+		rb.addPoint(0, 1);
+		System.out.println(RegionUtil.getRegionCenter(rb));
+	}
+	
 	/*********************************************************************************************/
 	/**
 	 * 求区域中心点
+	 * @param rcb 
 	 * 
 	 * @param p
 	 * @param r
 	 * @return
 	 */
-	public static PointBean getRegionCenter(){
+	public static PointBean getRegionCenter(RegionBean rb){
 		//TODO:
-		return null;
+		List<PointBean> points=rb.points;
+		double sumx=0;
+		double sumy=0;
+		for (PointBean p:points){
+			sumx+=p.getLon();
+			sumy+=p.getLat();
+		}
+		int size=points.size();
+		
+		return new PointBean(sumx/size,sumy/size);
 	}
 	/*********************************************************************************************/
 	

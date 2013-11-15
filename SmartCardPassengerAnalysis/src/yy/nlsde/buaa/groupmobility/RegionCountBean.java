@@ -22,7 +22,7 @@ public class RegionCountBean extends RegionBean{
 			String[] lonlat=data[i+4].split("-");
 			this.points.add(new PointBean(Double.parseDouble(lonlat[0]),Double.parseDouble(lonlat[1])));
 		}
-		this.center=RegionUtil.getRegionCenter();
+		this.center=RegionUtil.getRegionCenter(this);
 	}
 	
 	public int getCount(){
