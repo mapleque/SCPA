@@ -18,6 +18,10 @@ public class StreamBean {
 		return this.time+","+this.o+","+this.d+","+this.count;
 	}
 	
+	public String toStreamString(){
+		return this.o+","+this.d+","+this.count;
+	}
+	
 	public void addOne(){
 		this.count++;
 	}

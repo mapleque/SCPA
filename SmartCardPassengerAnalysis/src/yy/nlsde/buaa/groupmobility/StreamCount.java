@@ -1,11 +1,16 @@
 package yy.nlsde.buaa.groupmobility;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import yy.nlsde.buaa.stationpassenger.CardBean;
-import yy.nlsde.buaa.stationpassenger.CardReadIn;
+import yy.nlsde.buaa.base.util.OutToFile;
 
 public class StreamCount {
 	public static void main(String[] args){
@@ -14,6 +19,9 @@ public class StreamCount {
 		sc.outTmpFile();
 		sc.outStreamFile();
 	}
+	
+	private final static String OUT_PATH="streamCount";
+	private final static String SERVICE_PATH="webapp/data";
 	
 	private String date;
 	private HashMap<String,StreamBean> result=null;
@@ -109,10 +117,52 @@ public class StreamCount {
 	}
 	
 	public void outTmpFile(){
-		//TODO:
+		List<StreamBean> list=new ArrayList<StreamBean>();
+		for (String key:result.keySet()){
+			list.add(result.get(key));
+		}
+		OutToFile.outToFile(list, OUT_PATH+File.separator+date+".csv");
 	}
 	
 	public void outStreamFile(){
-		//TODO:
+		HashMap<String,List<StreamBean>> re=new HashMap<String,List<StreamBean>>();
+		for (String key:result.keySet()){
+			String nk=key.split(",")[0];
+			if (!re.containsKey(nk)){
+				re.put(nk, new ArrayList<StreamBean>());
+			}
+			re.get(nk).add(result.get(key));
+		}
+		for (String time:re.keySet()){
+			this.outStreamFile(re.get(time),SERVICE_PATH+File.separator+"stream"+File.separator+formatDate(date)+File.separator+time+".json");
+		}
+	}
+	
+	private String formatDate(String date){
+		return date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8);
+	}
+	
+	private void outStreamFile(List<StreamBean> list,String filename){
+		OutToFile.mkdir(filename, false);
+		try {
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+					new FileOutputStream(filename), "gbk"), true);
+			pw.println("[");
+			boolean first=true;
+			for (StreamBean sb : list) {
+				if (!first){
+					pw.println(",");
+				}
+				first=false;
+				pw.println("["+sb.toStreamString()+"]");
+			}
+			pw.println("]");
+			pw.close();
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }
