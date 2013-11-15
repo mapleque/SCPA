@@ -26,4 +26,8 @@ public class StreamBean {
 		this.count++;
 	}
 	
+	public int getCount(){
+		return this.count;
+	}
+	
 }
