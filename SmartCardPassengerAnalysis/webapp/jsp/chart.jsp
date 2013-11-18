@@ -3,6 +3,7 @@
     <%
     String id=request.getParameter("id");
     String d=request.getParameter("d");
+    String t=request.getParameter("t");
     %>
 <!DOCTYPE html>
 <html>
@@ -25,7 +26,7 @@ html,body {
 	<script type="text/javascript">
 		var div = document.getElementById("graphdiv");
 		$(div).height($(window).height());
-		g = new Dygraph(div, "../data/chart_<%out.print(id+"_"+d);%>.csv", {
+		g = new Dygraph(div, "<%out.print("../data/chart/1/"+d+"/"+t+"/"+id+".csv");%>", {
 			errorBars : true,
 			valueRange : [ 0, 15000 ]
 		}

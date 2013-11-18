@@ -52,7 +52,7 @@
 		
 3.chart数据
 	命名
-		chart/are/SEQ/yyyy-MM-dd.csv/chart/arr/SEQ/yyyy-MM-dd.csv 其中SEQ表示对应区域/流向的顺序号，从0开始
+		chart/{1|2}/yyyy-MM-dd/HH/are_SEQ.csv/chart/{1|2}/yyyy-MM-dd/HH/arr_SEQ.csv 其中SEQ表示对应区域/流向的顺序号，从0开始
 	格式
 			时间,下车,上车//标题行
 			time,up_num,up_rate,down_num,down_rate
@@ -61,7 +61,7 @@
 			//down_num下车流量，down_rate下车流量变化幅度
 		
 	示例
-		文件：chart/are/0/2013-05-31.csv
+		文件：chart/1/2013-05-31/7/are_0.csv
 		内容：
 			time,下车,上车
 			0:00,0,0,0,0
