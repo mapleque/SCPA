@@ -16,6 +16,9 @@ public class PointCountBean extends PointBean{
 		this.time=sub[2];
 		this.ud=Integer.parseInt(sub[3]);
 		this.count=Integer.parseInt(sub[4]);
+		
+		if (this.time.length()>2)
+			this.time=this.time.substring(this.time.length()-2);
 	}
 
 	public String getTime() {
