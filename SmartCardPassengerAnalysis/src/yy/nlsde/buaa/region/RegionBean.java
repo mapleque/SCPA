@@ -17,6 +17,4 @@ public class RegionBean {
 			points=new ArrayList<PointBean>();
 		points.add(p);
 	}
-	
-
 }

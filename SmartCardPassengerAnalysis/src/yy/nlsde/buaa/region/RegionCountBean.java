@@ -1,11 +1,14 @@
 package yy.nlsde.buaa.region;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class RegionCountBean extends RegionBean{
 	public List<PointBean> stations;
+	
+	HashMap<String,RegionChartBean> chartlist;
 
 	private int count=0;
 	
@@ -15,6 +18,16 @@ public class RegionCountBean extends RegionBean{
 	
 	public void addCount(int count){
 		this.count+=count;
+	}
+	
+	public void addChartCount(String time,int ud, int count){
+		if (chartlist==null){
+			chartlist=new HashMap<String,RegionChartBean>();
+		}
+		if (!chartlist.containsKey(time)){
+			chartlist.put(time, new RegionChartBean(time+":00"));
+		}
+		chartlist.get(time).add(ud,count);
 	}
 	
 	public String toString(){
@@ -48,7 +61,7 @@ public class RegionCountBean extends RegionBean{
 		stations.add(p);
 	}
 	
-	private void buildEdge(){
+	public void buildEdge(){
 		this.points=RegionUtil.Points2RegionEdge(this.stations);
 	}
 }

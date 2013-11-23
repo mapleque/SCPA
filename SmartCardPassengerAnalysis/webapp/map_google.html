@@ -20,21 +20,24 @@ body {
 
 .popup {
 	width: 400px;
-	height: 300px;
+	height: 250px;
 	position: absolute;
+	border:2px solid #aaa;
 }
 
 .popup_del {
-	width: 50px;
-	height: 50px;
+	width: 42px;
+	height: 42px;
 	background: url("./img/button_grey_close.png");
+	background: url("./img/close_normal.png");
 	position: relative;
-	top: -275px;
-	left: 375px;
+	top: -279px;
+	left: 379px;
 }
 
 .popup_del:hover {
 	background: url("./img/button_red_close.png");
+	background: url("./img/close_hover.png");
 }
 
 .opt {
@@ -55,7 +58,7 @@ input[type=range]:after {
 	function page_initial() {
 		var param = window.location.href;
 		var init_t = "8";
-		var init_d = "2013-05-31";
+		var init_d = "2012-07-09";
 		if (param.indexOf("?") > 0) {
 			init_t = param.substring(param.indexOf("t=") + 2, param
 					.indexOf("&"));
@@ -123,7 +126,7 @@ input[type=range]:after {
 		var ctime = document.getElementById("time").value;
 
 		//map.clearOverlays();
-		var MAXP = 10000;
+		var MAXP = 100000;
 		var arr = new window.mapleque.arrow();
 
 		stream_datas.forEach(function(d, l) {
@@ -150,6 +153,7 @@ input[type=range]:after {
 				});
 			});
 			var st = Math.log(d[1]) / Math.log(MAXP);
+			console.log("st",st);
 			if (st < 0)
 				st = 0;
 			are.set("are_" + l + "&d=" + cdate+ "&t=" + ctime, path, st);

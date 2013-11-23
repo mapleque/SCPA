@@ -27,8 +27,8 @@ html,body {
 		var div = document.getElementById("graphdiv");
 		$(div).height($(window).height());
 		g = new Dygraph(div, "<%out.print("../data/chart/1/"+d+"/"+t+"/"+id+".csv");%>", {
-			errorBars : true,
-			valueRange : [ 0, 15000 ]
+			errorBars : true
+			//valueRange : [ 0, 10000 ]
 		}
 
 		);
