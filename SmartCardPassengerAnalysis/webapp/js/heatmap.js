@@ -340,7 +340,7 @@
                 me.set("element", (config.element instanceof Object)?config.element:document.getElementById(config.element));
                 me.set("visible", (config.visible != null)?config.visible:true);
                 me.set("max", config.max || false);
-                me.set("gradient", config.gradient || { 0.45: "rgb(0,0,255)", 0.55: "rgb(0,255,255)", 0.65: "rgb(0,255,0)", 0.95: "yellow", 1.0: "rgb(255,0,0)"});    // default is the common blue to red gradient
+                me.set("gradient", config.gradient || { "0.45": "rgb(0,0,255)", "0.55": "rgb(0,255,255)", "0.65": "rgb(0,255,0)", "0.95": "yellow", "1.0": "rgb(255,0,0)"});    // default is the common blue to red gradient
                 me.set("opacity", parseInt(255/(100/config.opacity), 10) || 180);
                 me.set("width", config.width || 0);
                 me.set("height", config.height || 0);
