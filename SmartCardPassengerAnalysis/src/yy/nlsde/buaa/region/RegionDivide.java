@@ -132,7 +132,7 @@ public class RegionDivide {
 		return mind > 0 ? mind : 0;
 	}
 
-	private void outTmpFile() {
+	public void outTmpFile() {
 		List<String> list = new ArrayList<String>();
 		for (String key : result.keySet()) {
 			String[] subkey = key.split("_");
@@ -145,7 +145,7 @@ public class RegionDivide {
 		.outToFile(list, OUT_PATH + File.separator + date + ".csv");
 	}
 
-	private void outAreaFile() {
+	public void outAreaFile() {
 		for (String key : result.keySet()) {
 			String[] subkey = key.split("_");
 			outToHeatFile(result.get(key), SERVICE_PATH + File.separator
@@ -154,7 +154,7 @@ public class RegionDivide {
 		}
 	}
 
-	private void outChartFile() {
+	public void outChartFile() {
 		for (String key : result.keySet()) {
 			String[] subkey = key.split("_");
 			List<RegionCountBean> tpl = result.get(key);
