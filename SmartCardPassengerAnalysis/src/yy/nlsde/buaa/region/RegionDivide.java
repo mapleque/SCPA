@@ -133,16 +133,16 @@ public class RegionDivide {
 	}
 
 	private void outTmpFile() {
+		List<String> list = new ArrayList<String>();
 		for (String key : result.keySet()) {
 			String[] subkey = key.split("_");
-			List<String> list = new ArrayList<String>();
 			List<RegionCountBean> tpl = result.get(key);
 			for (RegionCountBean rcb : tpl) {
 				list.add(subkey[0] + "," + subkey[1] + "," + rcb.toString());
 			}
-			OutToFile
-					.outToFile(list, OUT_PATH + File.separator + date + ".csv");
 		}
+		OutToFile
+		.outToFile(list, OUT_PATH + File.separator + date + ".csv");
 	}
 
 	private void outAreaFile() {

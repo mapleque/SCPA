@@ -1,7 +1,6 @@
 package yy.nlsde.buaa.groupmobility;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RegionCountBean extends RegionBean{
 	public final static int UP=1;

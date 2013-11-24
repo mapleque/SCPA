@@ -1,11 +1,15 @@
 package yy.nlsde.buaa.groupmobility;
 
+import java.util.HashMap;
+
 public class StreamBean {
 
 	private PointBean o;
 	private PointBean d;
 	private int count;
 	private int time;
+	
+	public HashMap<Integer,StreamChartBean> chartlist; 
 	
 	public StreamBean(int time,PointBean o,PointBean d){
 		this.time=time;
@@ -22,8 +26,18 @@ public class StreamBean {
 		return this.o+","+this.d+","+this.count;
 	}
 	
-	public void addOne(){
-		this.count++;
+	public void addOne(int ut){
+		if (this.time==ut)
+			this.count++;
+		else{
+			if (chartlist==null){
+				chartlist=new HashMap<Integer,StreamChartBean>();
+			}
+			if (!chartlist.containsKey(ut)){
+				chartlist.put(ut, new StreamChartBean(ut));
+			}
+			chartlist.get(ut).add();
+		}
 	}
 	
 	public int getCount(){

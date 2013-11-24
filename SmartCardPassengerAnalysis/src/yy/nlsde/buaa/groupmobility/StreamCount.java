@@ -18,6 +18,7 @@ public class StreamCount {
 		sc.countStream();
 		sc.outTmpFile();
 		sc.outStreamFile();
+		sc.outChartFile();
 	}
 
 	private final static int STREAM_TH = 500;
@@ -27,8 +28,9 @@ public class StreamCount {
 
 	private String date;
 	private HashMap<String, StreamBean> result = null;
-	private HashMap<String, List<RegionCountBean>> uRegions;
-	private HashMap<String, List<RegionCountBean>> dRegions;
+	private HashMap<String, List<StreamBean>> finalResult=null;
+	private List<RegionCountBean> uRegions;
+	private List<RegionCountBean> dRegions;
 
 	public StreamCount(String date) {
 		this.date = date;
@@ -51,79 +53,84 @@ public class StreamCount {
 			}
 			this.add(card);
 		}
+		this.buildFinalResult();
 	}
 
-
 	private void readInRegion() {
-		uRegions = new HashMap<String, List<RegionCountBean>>();
-		dRegions = new HashMap<String, List<RegionCountBean>>();
+		uRegions = new ArrayList<RegionCountBean>();
+		dRegions = new ArrayList<RegionCountBean>();
 		RegionCountReadIn in = new RegionCountReadIn();
 		in.setDate(date);
 		RegionCountBean rcb;
 		while ((rcb = in.getRegionCountBean()) != null) {
 			switch (rcb.getUD()) {
 			case RegionCountBean.UP:
-				addRegion(rcb, uRegions);
+				uRegions.add(rcb);
 				break;
 			case RegionCountBean.DOWN:
-				addRegion(rcb, dRegions);
+				dRegions.add(rcb);
 				break;
 			}
 		}
-	}
-
-	private void addRegion(RegionCountBean rcb,
-			HashMap<String, List<RegionCountBean>> regions) {
-		String key = rcb.getTime();
-		if (!regions.containsKey(key)) {
-			regions.put(key, new ArrayList<RegionCountBean>());
-		}
-		regions.get(key).add(rcb);
 	}
 
 	private void add(CardBean card) {
 		if (result == null)
 			result = new HashMap<String, StreamBean>();
-		String uptime = card.getUpTime(CardBean.HOUR);
-		List<RegionCountBean> uregions = uRegions.get(uptime);
 		PointBean uppoint = new PointBean(Double.parseDouble(card.getUpLon()),
 				Double.parseDouble(card.getUpLat()));
-		List<PointBean> upregions = new ArrayList<PointBean>();
-		if (uregions != null) {
-			for (RegionCountBean rcb : uregions) {
+		List<RegionCountBean> upregions = new ArrayList<RegionCountBean>();
+		if (uRegions != null) {
+			for (RegionCountBean rcb : uRegions) {
 				if (RegionUtil.pointInRegion(uppoint, rcb)) {
-					upregions.add(rcb.center);
+					upregions.add(rcb);
 				}
 			}
 		}
 		if (upregions.size() <= 0)
 			return;
-		String donwtime = card.getDownTime(CardBean.HOUR);
-		List<RegionCountBean> dregions = dRegions.get(donwtime);
 		PointBean downpoint = new PointBean(Double.parseDouble(card
 				.getDownLon()), Double.parseDouble(card.getDownLat()));
-		List<PointBean> downregions = new ArrayList<PointBean>();
-		if (dregions != null) {
-			for (RegionCountBean rcb : dregions) {
+		List<RegionCountBean> downregions = new ArrayList<RegionCountBean>();
+		if (dRegions != null) {
+			for (RegionCountBean rcb : dRegions) {
 				if (RegionUtil.pointInRegion(downpoint, rcb)) {
-					downregions.add(rcb.center);
+					downregions.add(rcb);
 				}
 			}
 		}
 		if (downregions.size() <= 0)
 			return;
-		for (PointBean upb : upregions) {
-			for (PointBean dpb : downregions) {
-				int ut = Integer.parseInt(uptime);
+		for (RegionCountBean upb : upregions) {
+			for (RegionCountBean dpb : downregions) {
+				if (upb.getTime().equals(dpb.getTime())) {
+					int ct = Integer.parseInt(upb.getTime());
+					// result key: time,up_point,down_point
+					String key = ct + "," + upb + "," + dpb;
 
-				// result key: time,up_point,down_point
-				String key = ut + "," + upb + "," + dpb;
-
-				if (!result.containsKey(key)) {
-					result.put(key, new StreamBean(ut, upb, dpb));
+					if (!result.containsKey(key)) {
+						result.put(key, new StreamBean(ct, upb.center,
+								dpb.center));
+					}
+					String uptime = card.getUpTime(CardBean.HOUR);
+					int ut = Integer.parseInt(uptime);
+					result.get(key).addOne(ut);
 				}
-				result.get(key).addOne();
 			}
+		}
+	}
+	
+	private void buildFinalResult(){
+		finalResult = new HashMap<String, List<StreamBean>>();
+		for (String key : result.keySet()) {
+			if (result.get(key).getCount() < STREAM_TH) {
+				continue;
+			}
+			String nk = key.split(",")[0];
+			if (!finalResult.containsKey(nk)) {
+				finalResult.put(nk, new ArrayList<StreamBean>());
+			}
+			finalResult.get(nk).add(result.get(key));
 		}
 	}
 
@@ -136,21 +143,25 @@ public class StreamCount {
 	}
 
 	public void outStreamFile() {
-		HashMap<String, List<StreamBean>> re = new HashMap<String, List<StreamBean>>();
-		for (String key : result.keySet()) {
-			if (result.get(key).getCount() < STREAM_TH) {
-				continue;
-			}
-			String nk = key.split(",")[0];
-			if (!re.containsKey(nk)) {
-				re.put(nk, new ArrayList<StreamBean>());
-			}
-			re.get(nk).add(result.get(key));
-		}
-		for (String time : re.keySet()) {
-			this.outStreamFile(re.get(time), SERVICE_PATH + File.separator
+		for (String time : finalResult.keySet()) {
+			this.outStreamFile(finalResult.get(time), SERVICE_PATH + File.separator
 					+ "stream" + File.separator + formatDate(date)
 					+ File.separator + time + ".json");
+		}
+	}
+	
+	public void outChartFile(){
+		for (String key : finalResult.keySet()) {
+			List<StreamBean> tpl = finalResult.get(key);
+			int seq = 0;
+			for (StreamBean sb : tpl) {
+				String filename = SERVICE_PATH + File.separator + "chart"
+						+ File.separator + "1"+ File.separator + formatDate(date) 
+						+ File.separator + key + File.separator + "arr_"
+						+ seq + ".csv";
+				outChartFile(sb, filename);
+				seq++;
+			}
 		}
 	}
 
@@ -174,6 +185,28 @@ public class StreamCount {
 				pw.println("[" + sb.toStreamString() + "]");
 			}
 			pw.println("]");
+			pw.close();
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void outChartFile(StreamBean sb, String filename) {
+		OutToFile.mkdir(filename, false);
+		try {
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+					new FileOutputStream(filename), "utf-8"), true);
+			pw.println("time,下车,上车");
+			if (sb.chartlist != null) {
+				for (Integer key : sb.chartlist.keySet()) {
+					pw.println(sb.chartlist.get(key));
+				}
+			}else{
+				System.out.println(sb.toStreamString());
+			}
 			pw.close();
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
