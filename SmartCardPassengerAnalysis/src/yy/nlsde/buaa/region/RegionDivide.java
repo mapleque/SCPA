@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import yy.nlsde.buaa.base.util.CONSTANT;
 import yy.nlsde.buaa.base.util.OutToFile;
 
 public class RegionDivide {
 	public static void main(String[] args) {
-		RegionDivide rd = new RegionDivide("20120709");
+		CONSTANT.CardType=CONSTANT.BUS;
+		RegionDivide rd = new RegionDivide("20120910");
 		rd.generalTheRegion();
 		rd.outTmpFile();
 		rd.outAreaFile();
@@ -22,9 +24,13 @@ public class RegionDivide {
 		rd.generalTheChart();
 		rd.outChartFile();
 	}
+	public static final int AVILABLE_TH=5;
 
-	public static final int COUNT_TH = 4000;
-	public static final int DISTENCE_TH = 1500;
+//	public static final int COUNT_TH = 4000;
+//	public static final int DISTENCE_TH = 1500;
+//	public static final int SIMILAR_TH = 50;
+	public static final int COUNT_TH = 300;
+	public static final int DISTENCE_TH = 500;
 	public static final int SIMILAR_TH = 50;
 
 	private final static String OUT_PATH = "regionCount";
@@ -42,23 +48,37 @@ public class RegionDivide {
 		in.setDate(date);
 		HashMap<String, List<PointCountBean>> map = new HashMap<String, List<PointCountBean>>();
 		PointCountBean pcb = null;
+		int num=0;
 		while ((pcb = in.getPointCountBean()) != null) {
+			if (pcb.getCount()<=AVILABLE_TH)continue;
+			num++;
 			String key = pcb.getTime() + "_" + pcb.getUd();
 			if (!map.containsKey(key)) {
 				map.put(key, new ArrayList<PointCountBean>());
 			}
 			map.get(key).add(pcb);
 		}
+		System.out.println("station read in: "+num);
+		num=0;
 		for (String time : map.keySet()) {
-			this.generalTheRegion(time, map.get(time));
+			num++;
+			List<PointCountBean> list=map.get(time);
+			System.out.println("finished: "+(num*100/map.size())+"% deal key: "+time+" with station: "+list.size());
+			this.generalTheRegion(time,list );
 		}
+		System.out.println("region general finished");
 	}
 
 	public void generalTheChart() {
+		System.out.println("start general chart:" + System.currentTimeMillis());
 		PointCountReadIn in = new PointCountReadIn();
 		in.setDate(date);
 		PointCountBean pcb = null;
+		int num=0;
 		while ((pcb = in.getPointCountBean()) != null) {
+			num++;
+			if (num % 10000 == 0)
+				System.out.println(num + ":" + System.currentTimeMillis());
 			for (String key : result.keySet()) {
 				List<RegionCountBean> tl = result.get(key);
 				for (RegionCountBean rcb : tl) {
@@ -73,31 +93,59 @@ public class RegionDivide {
 
 	private void generalTheRegion(String time, List<PointCountBean> list) {
 		List<RegionCountBean> re = new ArrayList<RegionCountBean>();
-		for (PointCountBean pcb : list) {
-			// DBSCAN
-			this.merge(re, pcb);
+		boolean flag=true;
+		while (flag){
+			flag=false;
+			RegionCountBean rcb=null;
+			for (PointCountBean pcb : list) {
+				if (pcb.dealed)
+					continue;
+				if (rcb==null){
+					rcb=new RegionCountBean();
+					this.merge(rcb, pcb);
+					pcb.dealed=true;
+					flag=true;
+				}
+				else if (this.canMerge(rcb,pcb)){
+					this.merge(rcb, pcb);
+					pcb.dealed=true;
+					flag=true;
+				}
+			}
+			if (flag){
+				if (rcb.getCount()>COUNT_TH)
+					re.add(rcb);
+			}
 		}
+//		for (PointCountBean pcb : list) {
+//			num++;
+//			this.merge(re, pcb);
+//			if (num%500==0){
+//				System.out.println("merge num: "+num+" cur regions: "+re.size());
+//			}
+//		}
+		System.out.println("merge regions: "+re.size());
 		if (result == null) {
 			result = new HashMap<String, List<RegionCountBean>>();
 		}
 		result.put(time, re);
 	}
 
-	private void merge(List<RegionCountBean> list, PointCountBean pcb) {
-		// merge into the existing region result
-		boolean merged = false;
-		for (RegionCountBean r : list) {
-			if (canMerge(r, pcb)) {
-				merge(r, pcb);
-				merged = true;
-			}
-		}
-		if (!merged) {
-			RegionCountBean nr = new RegionCountBean();
-			merge(nr, pcb);
-			list.add(nr);
-		}
-	}
+//	private void merge(List<RegionCountBean> list, PointCountBean pcb) {
+//		// merge into the existing region result
+//		boolean merged = false;
+//		for (RegionCountBean r : list) {
+//			if (canMerge(r, pcb)) {
+//				merge(r, pcb);
+//				merged = true;
+//			}
+//		}
+//		if (!merged) {
+//			RegionCountBean nr = new RegionCountBean();
+//			merge(nr, pcb);
+//			list.add(nr);
+//		}
+//	}
 
 	private void merge(RegionCountBean r, PointCountBean p) {
 		r.addStation(p);

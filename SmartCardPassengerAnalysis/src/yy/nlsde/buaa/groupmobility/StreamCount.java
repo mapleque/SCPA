@@ -10,18 +10,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import yy.nlsde.buaa.base.util.CONSTANT;
 import yy.nlsde.buaa.base.util.OutToFile;
 
 public class StreamCount {
 	public static void main(String[] args) {
-		StreamCount sc = new StreamCount("20120709");
+		CONSTANT.CardType=CONSTANT.BUS;
+		StreamCount sc = new StreamCount("20120910");
 		sc.countStream();
 		sc.outTmpFile();
 		sc.outStreamFile();
 		sc.outChartFile();
 	}
 
-	private final static int STREAM_TH = 500;
+	private final static int STREAM_TH = 100;
 
 	private final static String OUT_PATH = "streamCount";
 	private final static String SERVICE_PATH = "webapp/data";
@@ -72,6 +74,7 @@ public class StreamCount {
 				break;
 			}
 		}
+		System.out.println("up regions: " +uRegions.size()+" down regions: "+dRegions.size());
 	}
 
 	private void add(CardBean card) {

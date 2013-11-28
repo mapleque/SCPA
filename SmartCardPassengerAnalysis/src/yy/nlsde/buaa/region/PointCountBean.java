@@ -9,6 +9,8 @@ public class PointCountBean extends PointBean{
 	private int ud;//up or down
 	private int count;
 	
+	public boolean dealed=false;
+	
 	public PointCountBean(String line) {
 		String[] sub=line.split(",");
 		this.lon=Double.parseDouble(sub[0]);
