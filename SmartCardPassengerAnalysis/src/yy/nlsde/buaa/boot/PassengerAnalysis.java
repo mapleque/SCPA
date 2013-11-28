@@ -1,5 +1,6 @@
 package yy.nlsde.buaa.boot;
 
+import yy.nlsde.buaa.base.util.CONSTANT;
 import yy.nlsde.buaa.groupmobility.StreamCount;
 import yy.nlsde.buaa.region.RegionDivide;
 import yy.nlsde.buaa.stationpassenger.PassengerCount;
@@ -9,8 +10,9 @@ public class PassengerAnalysis {
 	public static void main(String[] args) {
 		//也可以通过读入参数实现自动计算
 		//String date=args[0];
-		
-		String date="20120709";
+		CONSTANT.CardType=CONSTANT.BUS;
+//		String date="20120709";
+		String date="20120910";
 		startAnalaysis(date);
 	}
 

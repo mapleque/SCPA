@@ -3,8 +3,6 @@ package yy.nlsde.buaa.patternlibrary;
 import yy.nlsde.buaa.base.util.CONSTANT;
 
 public class CardBean{
-	public final static int AFC=1;
-	public final static int BUS=2;
 	
 	protected String line;
 	protected String cardID;
@@ -58,13 +56,32 @@ public class CardBean{
 	 */
 	public CardBean(String line, int type) {
 		switch (type) {
-		case AFC:
+		case CONSTANT.AFC:
 			initialAFC(line);
 			break;
-		case BUS:
+		case CONSTANT.BUS:
+			initialBUS(line);
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private void initialBUS(String line){
+		this.line = line;
+		String info[] = line.split(",");
+		if (info.length<8){
+			this.avilable=false;
+			lineID="-1";
+		}else{
+			this.upLon=info[0];
+			this.upLat=info[1];
+			this.upTime=info[2];
+			this.downLon=info[3];
+			this.downLat=info[4];
+			this.downTime=info[5];
+			this.cardID=info[6];
+			this.lineID=info[7];
 		}
 	}
 

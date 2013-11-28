@@ -10,6 +10,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 public class CONSTANT {
+	public final static int AFC=1;
+	public final static int BUS=2;
+	
+	public static int CardType=1;
 
 	private static HashMap<String,String> STATION_TO_POSITION=null;
 	

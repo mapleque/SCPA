@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import yy.nlsde.buaa.base.util.CONSTANT;
+
 public class CardReadIn {
 
 	private String cardDataPath = null;
@@ -45,7 +47,7 @@ public class CardReadIn {
 				}
 				return null;
 			}
-			return new CardBean(line,CardBean.AFC);
+			return new CardBean(line,CONSTANT.CardType);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {

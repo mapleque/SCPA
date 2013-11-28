@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
+import yy.nlsde.buaa.base.util.CONSTANT;
+
 public class CardReadIn {
 	private final static String pathProperties = "conf"+File.separator+"data_path.properties";
 	private static Properties p;
@@ -72,7 +74,7 @@ public class CardReadIn {
 				}
 				return null;
 			}
-			return new CardBean(line,CardBean.AFC);
+			return new CardBean(line,CONSTANT.CardType);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
