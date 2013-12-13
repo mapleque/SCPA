@@ -4,6 +4,8 @@
     String id=request.getParameter("id");
     String d=request.getParameter("d");
     String t=request.getParameter("t");
+    String path=request.getSession().getServletContext().getRealPath("/");
+    System.out.println(System.currentTimeMillis()+"##read data: "+path+"/data/chart/1/"+d+"/"+t+"/"+id+".csv");
     %>
 <!DOCTYPE html>
 <html>
