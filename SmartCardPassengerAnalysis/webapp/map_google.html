@@ -58,7 +58,7 @@ input[type=range]:after {
 	function page_initial() {
 		var param = window.location.href;
 		var init_t = "8";
-		var init_d = "2012-07-09";
+		var init_d = "2012-09-01";
 		if (param.indexOf("?") > 0) {
 			init_t = param.substring(param.indexOf("t=") + 2, param
 					.indexOf("&"));
@@ -103,7 +103,7 @@ input[type=range]:after {
 		map = new google.maps.Map(document.getElementById("map-canvas"),
 				myOptions);
 		heatmap = new HeatmapOverlay(map, {
-			"radius" : 10,
+			"radius" : 20,
 			"visible" : true,
 			"opacity" : 20
 		});
