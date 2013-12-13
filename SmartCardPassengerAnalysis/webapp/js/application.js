@@ -9,8 +9,9 @@
 		var ele=document.createElement("div");
 		ele.setAttribute("class", "popup");
 		ele.setAttribute("id","popup_div");
-		$(ele).css("top",e.Xa.y);
-		$(ele).css("left",e.Xa.x);
+		console.log(e);
+		$(ele).css("top",e.Ta.y);
+		$(ele).css("left",e.Ta.x);
 		ele.innerHTML='<iframe style="border:0;width:400px;height:250px;" src="./jsp/chart.jsp?id='+a+'"></iframe>';
 		
 		var del=document.createElement("div");
@@ -25,8 +26,8 @@
 	};
 	var movePopup=function(e){
 		var ele=document.getElementById("popup_div");
-		$(ele).css("top",e.Xa.y);
-		$(ele).css("left",e.Xa.x);
+		$(ele).css("top",e.Ta.y);
+		$(ele).css("left",e.Ta.x);
 	};
 	var removePopup=function(){
 		var ele=document.getElementById("popup_div");
